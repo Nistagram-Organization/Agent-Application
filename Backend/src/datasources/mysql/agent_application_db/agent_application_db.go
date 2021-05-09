@@ -2,13 +2,8 @@ package agent_application_db
 
 import (
 	"fmt"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/delivery_informations"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoice_items"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/products"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 	"os"
 )
 
@@ -20,14 +15,25 @@ const (
 )
 
 var (
-	Client   *gorm.DB
-	username = os.Getenv(mysqlUsername)
-	password = os.Getenv(mysqlPassword)
-	host     = os.Getenv(mysqlHost)
-	schema   = os.Getenv(mysqlSchema)
+	Client mysqlClientInterface = &mysqlClient{}
 )
 
-func connectToDB() {
+type mysqlClientInterface interface {
+	Init() error
+	Migrate(...interface{}) error
+	Get(interface{}, uint) *gorm.DB
+}
+
+type mysqlClient struct {
+	Client *gorm.DB
+}
+
+func (c *mysqlClient) Init() error {
+	username := os.Getenv(mysqlUsername)
+	password := os.Getenv(mysqlPassword)
+	host := os.Getenv(mysqlHost)
+	schema := os.Getenv(mysqlSchema)
+
 	dataSourceName := fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		username,
@@ -36,30 +42,19 @@ func connectToDB() {
 		schema,
 	)
 
-	var err error
-	Client, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{})
+	client, err := gorm.Open(mysql.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
-		panic(err)
-	}
-	log.Println("connected to database")
-}
-
-func migrateDB() {
-	err := Client.AutoMigrate(
-		&products.Product{},
-		&invoices.Invoice{},
-		&invoice_items.InvoiceItem{},
-		&delivery_informations.DeliveryInformation{},
-	)
-
-	if err != nil {
-		panic(err)
+		return err
 	}
 
-	log.Println("migration successful")
+	c.Client = client
+	return nil
 }
 
-func init() {
-	connectToDB()
-	migrateDB()
+func (c *mysqlClient) Migrate(interfaces ...interface{}) error {
+	return c.Client.AutoMigrate(interfaces...)
+}
+
+func (c *mysqlClient) Get(entity interface{}, pk uint) *gorm.DB {
+	return c.Client.First(&entity, pk)
 }

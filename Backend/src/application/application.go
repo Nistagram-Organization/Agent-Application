@@ -10,6 +10,7 @@ var (
 
 func StartApplication() {
 	mapUrls()
+	initDbs()
 
 	router.Run(":8080")
 }
