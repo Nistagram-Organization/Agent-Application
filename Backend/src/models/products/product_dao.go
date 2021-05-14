@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Product) Get() rest_errors.RestErr {
-	if err := agent_application_db.Client.Get(&p, p.ID); err != nil {
+	if err := agent_application_db.Client.GetClient().Take(&p, p.ID).Error; err != nil {
 		fmt.Sprintln(err)
 		return rest_errors.NewNotFoundError(fmt.Sprintf("Error when trying to get product with id %d", p.ID))
 	}

@@ -21,7 +21,7 @@ var (
 type mysqlClientInterface interface {
 	Init() error
 	Migrate(...interface{}) error
-	Get(interface{}, uint) *gorm.DB
+	GetClient() *gorm.DB
 }
 
 type mysqlClient struct {
@@ -55,6 +55,6 @@ func (c *mysqlClient) Migrate(interfaces ...interface{}) error {
 	return c.Client.AutoMigrate(interfaces...)
 }
 
-func (c *mysqlClient) Get(entity interface{}, pk uint) *gorm.DB {
-	return c.Client.First(&entity, pk)
+func (c *mysqlClient) GetClient() *gorm.DB {
+	return c.Client
 }
