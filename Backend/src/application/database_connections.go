@@ -7,7 +7,6 @@ import (
 	"github.com/Nistagram-Organization/Agent-Application/src/models/invoice_items"
 	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
 	"github.com/Nistagram-Organization/Agent-Application/src/models/products"
-	"github.com/Nistagram-Organization/Agent-Application/src/utils/bcrypt_utils"
 	"log"
 )
 
@@ -33,12 +32,4 @@ func initDbs() {
 	}
 
 	log.Println("Database migration successful")
-
-	testCredentails := credentials.Credentials{
-		Username: "paprika",
-		Password: bcrypt_utils.GetHash("paprika"),
-	}
-	agent_application_db.Client.GetClient().Create(&testCredentails)
-
-	log.Println("Created test credentials")
 }

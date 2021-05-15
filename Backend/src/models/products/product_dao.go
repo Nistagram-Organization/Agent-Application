@@ -13,3 +13,12 @@ func (p *Product) Get() rest_errors.RestErr {
 	}
 	return nil
 }
+
+func (p *Product) GetAll() []Product {
+	var products []Product
+
+	if err := agent_application_db.Client.GetClient().Find(&products).Error; err != nil {
+		return []Product{}
+	}
+	return products
+}

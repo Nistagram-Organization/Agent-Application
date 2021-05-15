@@ -9,6 +9,7 @@ import (
 func mapUrls() {
 	router.GET("/ping", ping.PingController.Ping)
 
+	router.GET("/products", products.ProductsController.GetAll)
 	router.GET("/products/:id", products.ProductsController.Get)
 
 	router.POST("/login", authorization.AuthorizationController.Login)

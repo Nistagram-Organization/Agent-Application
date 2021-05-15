@@ -11,6 +11,7 @@ var (
 
 type productsServiceInterface interface {
 	Get(uint) (*products.Product, rest_errors.RestErr)
+	GetAll() []products.Product
 }
 
 type productsService struct{}
@@ -23,4 +24,9 @@ func (s *productsService) Get(id uint) (*products.Product, rest_errors.RestErr) 
 	}
 
 	return &product, nil
+}
+
+func (s *productsService) GetAll() []products.Product {
+	dao := products.Product{}
+	return dao.GetAll()
 }

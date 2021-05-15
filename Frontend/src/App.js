@@ -33,7 +33,7 @@ const App = () => (
             <Route path='/dashboard'>
                 <Dashboard/>
             </Route>
-            <Route exact path='/'>
+            <Route exact path='*'>
                 <Redirect to='/dashboard'/>
             </Route>
         </Switch>

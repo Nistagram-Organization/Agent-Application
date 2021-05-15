@@ -14,6 +14,7 @@ var (
 
 type productsControllerInterface interface {
 	Get(*gin.Context)
+	GetAll(*gin.Context)
 }
 
 type productsController struct{}
@@ -40,4 +41,8 @@ func (c *productsController) Get(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, product)
+}
+
+func (c *productsController) GetAll(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, products.ProductsService.GetAll())
 }
