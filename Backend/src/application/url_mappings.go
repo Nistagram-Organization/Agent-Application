@@ -11,6 +11,7 @@ func mapUrls() {
 
 	router.GET("/products", products.ProductsController.GetAll)
 	router.GET("/products/:id", products.ProductsController.Get)
+	router.POST("/products", products.ProductsController.Create)
 
 	router.POST("/login", authorization.AuthorizationController.Login)
 }
