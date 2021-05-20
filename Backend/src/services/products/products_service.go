@@ -35,12 +35,16 @@ func (s *productsService) GetAll() []products.Product {
 }
 
 func (s *productsService) Buy(invoice *invoices.Invoice) rest_errors.RestErr {
-	if invoice.InvoiceItems == nil || len(invoice.InvoiceItems) == 0 {
-		return rest_errors.NewBadRequestError("No items are selected for buying")
+	if err := invoice.Validate(); err != nil {
+		return err
 	}
 
 	var total float32
 	for _, item := range invoice.InvoiceItems {
+		if err := item.Validate(); err != nil {
+			return err
+		}
+
 		product := products.Product{ID: item.ProductID}
 
 		if err := product.Get(); err != nil {
