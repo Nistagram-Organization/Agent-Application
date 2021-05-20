@@ -1,6 +1,8 @@
 package products
 
 import (
+	"fmt"
+	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
 	"github.com/Nistagram-Organization/Agent-Application/src/services/products"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/gin-gonic/gin"
@@ -15,6 +17,7 @@ var (
 type productsControllerInterface interface {
 	Get(*gin.Context)
 	GetAll(*gin.Context)
+	Buy(*gin.Context)
 }
 
 type productsController struct{}
@@ -45,4 +48,15 @@ func (c *productsController) Get(ctx *gin.Context) {
 
 func (c *productsController) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, products.ProductsService.GetAll())
+}
+
+func (c *productsController) Buy(ctx *gin.Context) {
+	var invoice invoices.Invoice
+	if err := ctx.ShouldBindJSON(&invoice); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println(invoice.ID)
+
+	ctx.JSON(http.StatusOK, products.ProductsService.Buy(&invoice))
 }

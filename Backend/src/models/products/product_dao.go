@@ -22,3 +22,11 @@ func (p *Product) GetAll() []Product {
 	}
 	return products
 }
+
+func (p *Product) Update() rest_errors.RestErr {
+	if err := agent_application_db.Client.GetClient().Save(&p).Error; err != nil {
+		fmt.Sprintln(err)
+		return rest_errors.NewInternalServerError("Error when trying to update product", err)
+	}
+	return nil
+}
