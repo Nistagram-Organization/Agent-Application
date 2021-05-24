@@ -12,9 +12,15 @@ const getProduct = async (id) => {
     return response.data
 }
 
+const deleteProduct = async (id) => {
+    const response = await axios.delete(`${BASE_URL}/products/${id}`)
+    return response.data
+}
+
 const bookService = {
     getProducts,
-    getProduct
+    getProduct,
+    deleteProduct
 }
 
 

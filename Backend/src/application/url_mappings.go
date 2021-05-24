@@ -12,6 +12,7 @@ func mapUrls() {
 
 	router.GET("/products", products.ProductsController.GetAll)
 	router.GET("/products/:id", products.ProductsController.Get)
+	router.DELETE("/products/:id", products.ProductsController.Delete)
 
 	router.POST("/invoices", invoices.InvoicesController.BuyProduct)
 
