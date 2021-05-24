@@ -24,7 +24,7 @@ module.exports = {
     ],
     'space-infix-ops': ['error', { 'int32Hint': false }],
     'linebreak-style': [
-      'error',
+      'warn',
       'windows'
     ],
     'quotes': [

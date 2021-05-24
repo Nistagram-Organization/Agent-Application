@@ -25,12 +25,12 @@ jobs:
       working-directory: ./Backend
       run: go build -o ./Agent-Application.exe ./src/main.go
   
-  # Build frontend application
-  build-frontend:
+  # Build frontend application on mac and ubuntu
+  build-frontend-mac-ubuntu:
     strategy:
       matrix:
         node-version: [12.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
@@ -38,5 +38,29 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
+    - name: Clean install
+      working-directory: ./Frontend
+      run: npm ci
+    - name: Build React app
+      working-directory: ./Frontend
+      run: CI=false npm run build --if-present
+      
+  # Build frontend application on windows
+  build-frontend-windows:
+    strategy:
+      matrix:
+        node-version: [12.x]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Clean install
+      working-directory: ./Frontend
+      run: npm ci
+    - name: Build React app
+      working-directory: ./Frontend
+      run: set CI=false && npm run build --if-present
