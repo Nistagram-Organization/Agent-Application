@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router-dom'
-import { getProduct, setBuyOrder } from '../reducers/productReducer'
+import { getProduct } from '../reducers/productReducer'
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import CurrencyFormat from 'react-currency-format'
 import BuyProductModal from './BuyProductModal.jsx'
 import { Formik } from 'formik'
 import * as yup from 'yup'
+import { setBuyOrder } from '../reducers/invoiceReducer'
 
 const buyModalSchema = yup.object().shape({
     quantity: yup
@@ -93,7 +94,7 @@ const Product = () => {
                                     <Row style={{ marginTop: '1%' }}>
                                         <Col sm={4}/>
                                         <Col sm={7}>
-                                            <Button type="button" onClick={() => formik.submitForm()}>Buy</Button>
+                                            <Button type="submit">Buy</Button>
                                         </Col>
                                     </Row>
                                 </Form>)}

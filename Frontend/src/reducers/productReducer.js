@@ -22,17 +22,7 @@ export const getProduct = (id) => {
     }
 }
 
-export const setBuyOrder = (productId, quantity) => {
-    return async dispatch => {
-        dispatch({
-            type: 'SET_BUY_ORDER',
-            productId,
-            quantity
-        })
-    }
-}
-
-const reducer = (state = { list: [], shown: null, productId: null, quantity: 0 }, action) => {
+const reducer = (state = { list: [], shown: null }, action) => {
     switch (action.type) {
         case 'GET_PRODUCTS': {
             return {
@@ -44,13 +34,6 @@ const reducer = (state = { list: [], shown: null, productId: null, quantity: 0 }
             return {
                 ...state,
                 shown: action.product
-            }
-        }
-        case 'SET_BUY_ORDER': {
-            return {
-                ...state,
-                productId: action.productId,
-                quantity: action.quantity
             }
         }
         default:

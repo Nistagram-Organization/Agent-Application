@@ -4,9 +4,9 @@ import { Formik } from 'formik'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { Row as FlexRow, Col as FlexCol } from 'react-flexa'
 import { useDispatch, useSelector } from 'react-redux'
-import productService from '../services/productService'
 import { setNotification } from '../reducers/notificationReducer'
-import { setBuyOrder } from '../reducers/productReducer'
+import invoicesService from '../services/invoicesService'
+import { setBuyOrder } from '../reducers/invoiceReducer'
 
 const deliveryInformationSchema = yup.object().shape({
     name: yup
@@ -32,8 +32,8 @@ const deliveryInformationSchema = yup.object().shape({
 
 const DeliveryInformationForm = ({ toggleModal }) => {
     const dispatch = useDispatch()
-    const productID = useSelector(state => state.products.productId)
-    const quantity = useSelector(state => state.products.quantity)
+    const productID = useSelector(state => state.invoices.productId)
+    const quantity = useSelector(state => state.invoices.quantity)
 
     const buyProduct = async (values) => {
         let invoice = {
@@ -45,7 +45,7 @@ const DeliveryInformationForm = ({ toggleModal }) => {
         }
 
         try {
-            await productService.buyProduct(invoice)
+            await invoicesService.sendInvoice(invoice)
             dispatch(setNotification('Product bought successfully', 'success', 3000))
         } catch (e) {
             dispatch(setNotification(e.response.data.message, 'error', 3000))

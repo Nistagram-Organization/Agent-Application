@@ -8,7 +8,7 @@ import (
 
 type Invoice struct {
 	ID                  uint    `json:"id"`
-	Date                string  `json:"date"`
+	Date                int64   `json:"date"`
 	Total               float32 `json:"total"`
 	InvoiceItems        []invoice_items.InvoiceItem
 	DeliveryInformation delivery_informations.DeliveryInformation
