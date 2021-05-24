@@ -1,7 +1,6 @@
 package products
 
 import (
-	"fmt"
 	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
 	"github.com/Nistagram-Organization/Agent-Application/src/services/products"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
@@ -53,10 +52,15 @@ func (c *productsController) GetAll(ctx *gin.Context) {
 func (c *productsController) Buy(ctx *gin.Context) {
 	var invoice invoices.Invoice
 	if err := ctx.ShouldBindJSON(&invoice); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		restErr := rest_errors.NewBadRequestError("invalid json body")
+		ctx.JSON(restErr.Status(), restErr)
 		return
 	}
-	fmt.Println(invoice.ID)
 
-	ctx.JSON(http.StatusOK, products.ProductsService.Buy(&invoice))
+	if err := products.ProductsService.Buy(&invoice); err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "Product bought successfully")
 }

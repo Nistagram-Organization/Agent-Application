@@ -12,9 +12,15 @@ const getProduct = async (id) => {
     return response.data
 }
 
+const buyProduct = async (invoice) => {
+    const response = await axios.post(`${BASE_URL}/buy`, invoice)
+    return response.data
+}
+
 const bookService = {
     getProducts,
-    getProduct
+    getProduct,
+    buyProduct
 }
 
 
