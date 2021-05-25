@@ -15,7 +15,8 @@ const getProduct = async (id) => {
 const createProduct = async (product) => {
     const response = await axios.post(`${BASE_URL}/products`, product)
     return response.data
-  
+}
+
 const deleteProduct = async (id) => {
     const response = await axios.delete(`${BASE_URL}/products/${id}`)
     return response.data

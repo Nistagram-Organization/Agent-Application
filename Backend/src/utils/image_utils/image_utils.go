@@ -15,6 +15,10 @@ import (
 	"strings"
 )
 
+const (
+	pngType = "image/png"
+)
+
 func encodeBytesToBase64String(bytes []byte) string {
 	var base64Encoding string
 	mimeType := http.DetectContentType(bytes)
@@ -38,7 +42,7 @@ func decodeBase64String(base64Encoded string, imageType string) (image.Image, re
 		return nil, rest_errors.NewBadRequestError("Error when decoding image")
 	}
 	reader := bytes.NewReader(decoded)
-	if imageType == "image/png" {
+	if imageType == pngType {
 		image, err = png.Decode(reader)
 	} else {
 		image, err = jpeg.Decode(reader)
@@ -64,7 +68,7 @@ func writeImageToFile(path string, image image.Image, imageType string) rest_err
 	}
 	defer file.Close()
 
-	if imageType == "image/png" {
+	if imageType == pngType {
 		if err := png.Encode(file, image); err != nil {
 			return rest_errors.NewInternalServerError("Error when writing to file", err)
 		}
