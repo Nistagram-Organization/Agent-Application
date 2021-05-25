@@ -24,9 +24,6 @@ func (p *Product) Validate() rest_errors.RestErr {
 	if p.Price <= 0 {
 		return rest_errors.NewBadRequestError("Product price must be greater than zero")
 	}
-	if p.OnStock < 0 {
-		return rest_errors.NewBadRequestError("Product stock must be equal or greater than zero")
-	}
 	if strings.TrimSpace(p.Image) == "" {
 		return rest_errors.NewBadRequestError("Product image cannot be empty")
 	}
