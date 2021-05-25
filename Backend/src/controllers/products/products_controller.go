@@ -17,6 +17,7 @@ type productsControllerInterface interface {
 	Get(*gin.Context)
 	GetAll(*gin.Context)
 	Create(*gin.Context)
+	Delete(*gin.Context)
 }
 
 type productsController struct{}
@@ -43,6 +44,22 @@ func (c *productsController) Get(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, product)
+}
+
+func (c *productsController) Delete(ctx *gin.Context) {
+	productId, idErr := getProductId(ctx.Param("id"))
+	if idErr != nil {
+		ctx.JSON(idErr.Status(), idErr)
+		return
+	}
+
+	delErr := products.ProductsService.Delete(productId)
+	if delErr != nil {
+		ctx.JSON(delErr.Status(), delErr)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "Product deleted successfully")
 }
 
 func (c *productsController) GetAll(ctx *gin.Context) {

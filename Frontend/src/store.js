@@ -4,11 +4,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 import productReducer from './reducers/productReducer'
+import invoiceReducer from './reducers/invoiceReducer'
 
 const reducer = combineReducers({
     authentication: authenticationReducer,
     notification: notificationReducer,
-    products: productReducer
+    products: productReducer,
+    invoices: invoiceReducer
 })
 
 const rootReducer = (state, action) => {

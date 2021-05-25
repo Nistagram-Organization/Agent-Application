@@ -29,3 +29,19 @@ func (p *Product) Create() rest_errors.RestErr {
 	}
 	return nil
 }
+
+func (p *Product) Update() rest_errors.RestErr {
+	if err := agent_application_db.Client.GetClient().Save(&p).Error; err != nil {
+		fmt.Sprintln(err)
+		return rest_errors.NewInternalServerError("Error when trying to update product", err)
+	}
+	return nil
+}
+
+func (p *Product) Delete() rest_errors.RestErr {
+	if err := agent_application_db.Client.GetClient().Delete(&p).Error; err != nil {
+		fmt.Sprintln(err)
+		return rest_errors.NewInternalServerError("Error when trying to delete product", err)
+	}
+	return nil
+}
