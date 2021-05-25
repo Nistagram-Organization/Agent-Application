@@ -20,6 +20,7 @@ type productsServiceInterface interface {
 	GetAll() []products.Product
 	Create(*products.Product) (*products.Product, rest_errors.RestErr)
 	Delete(uint) rest_errors.RestErr
+	Edit(*products.Product) (*products.Product, rest_errors.RestErr)
 }
 
 type productsService struct{}
@@ -60,6 +61,28 @@ func (s *productsService) Create(product *products.Product) (*products.Product, 
 	product.Image = imagePath
 
 	if err := product.Create(); err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
+func (s *productsService) Edit(product *products.Product) (*products.Product, rest_errors.RestErr) {
+	if err := product.Validate(); err != nil {
+		return nil, err
+	}
+
+	productToEdit := products.Product{ID: product.ID}
+	if getErr := productToEdit.Get(); getErr != nil {
+		return nil, getErr
+	}
+
+	imagePath, err := image_utils.SaveImage(product.Image, TEMP_FOLDER)
+	if err != nil {
+		return nil, err
+	}
+	product.Image = imagePath
+
+	if err := product.Update(); err != nil {
 		return nil, err
 	}
 	return product, nil
