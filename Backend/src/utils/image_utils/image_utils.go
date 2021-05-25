@@ -1,13 +1,18 @@
 package image_utils
 
 import (
+	"bytes"
 	"encoding/base64"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/nu7hatch/gouuid"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func encodeBytesToBase64String(bytes []byte) string {
@@ -19,12 +24,29 @@ func encodeBytesToBase64String(bytes []byte) string {
 	return base64Encoding
 }
 
-func decodeBase64String(base64Encoded string) ([]byte, rest_errors.RestErr) {
-	decoded, err := base64.StdEncoding.DecodeString(base64Encoded)
+func returnImageType(base64Encoded string) string {
+	return strings.TrimSuffix(base64Encoded[5:strings.Index(base64Encoded, ",")], ";base64")
+}
+
+func decodeBase64String(base64Encoded string, imageType string) (image.Image, rest_errors.RestErr) {
+	var image image.Image
+	var err error
+
+	trimmmed := base64Encoded[strings.Index(base64Encoded, ",")+1:]
+	decoded, decodingErr := base64.StdEncoding.DecodeString(trimmmed)
+	if decodingErr != nil {
+		return nil, rest_errors.NewBadRequestError("Error when decoding image")
+	}
+	reader := bytes.NewReader(decoded)
+	if imageType == "image/png" {
+		image, err = png.Decode(reader)
+	} else {
+		image, err = jpeg.Decode(reader)
+	}
 	if err != nil {
 		return nil, rest_errors.NewBadRequestError("Error when decoding image")
 	}
-	return decoded, nil
+	return image, nil
 }
 
 func generateUUID() (string, rest_errors.RestErr) {
@@ -35,17 +57,21 @@ func generateUUID() (string, rest_errors.RestErr) {
 	return id.String(), nil
 }
 
-func writeBytesToFile(path string, content []byte) rest_errors.RestErr {
+func writeImageToFile(path string, image image.Image, imageType string) rest_errors.RestErr {
 	file, err := os.Create(path)
 	if err != nil {
 		return rest_errors.NewInternalServerError("Error when creating file", err)
 	}
 	defer file.Close()
-	if _, err := file.Write(content); err != nil {
-		return rest_errors.NewInternalServerError("Error when writing to file", err)
-	}
-	if err := file.Sync(); err != nil {
-		return rest_errors.NewInternalServerError("Error when writing to file", err)
+
+	if imageType == "image/png" {
+		if err := png.Encode(file, image); err != nil {
+			return rest_errors.NewInternalServerError("Error when writing to file", err)
+		}
+	} else {
+		if err := jpeg.Encode(file, image, nil); err != nil {
+			return rest_errors.NewInternalServerError("Error when writing to file", err)
+		}
 	}
 	return nil
 }
@@ -59,15 +85,21 @@ func readBytesFromFile(path string) ([]byte, rest_errors.RestErr) {
 }
 
 func SaveImage(base64Encoded string, basePath string) (string, rest_errors.RestErr) {
-	decoded, err := decodeBase64String(base64Encoded)
+	imageType := returnImageType(base64Encoded)
+	image, err := decodeBase64String(base64Encoded, imageType)
 	if err != nil {
 		return "", err
 	}
 
 	id, err := generateUUID()
-	imagePath := filepath.Join(basePath, id)
+	imageName := id + "." + strings.Split(imageType, "/")[1]
+	imagePath := filepath.Join(basePath, imageName)
 
-	if err := writeBytesToFile(imagePath, decoded); err != nil {
+	if _, err := os.Stat(basePath); os.IsNotExist(err) {
+		os.MkdirAll(basePath, 0700)
+	}
+
+	if err := writeImageToFile(imagePath, image, imageType); err != nil {
 		return "", err
 	}
 

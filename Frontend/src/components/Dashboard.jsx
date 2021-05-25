@@ -22,20 +22,22 @@ const Dashboard = () => {
     return (
         <div>
             <Navbar authenticated={authenticated}/>
-            <GuardProvider guards={[requireAuthentication]}>
-                <GuardedRoute path='/dashboard/products/:id'>
-                    <Product/>
-                </GuardedRoute>
-                <GuardedRoute exact path='/dashboard/products'>
-                    <Products/>
-                </GuardedRoute>
-                <GuardedRoute exact path='/dashboard/reports' meta={{ authenticated: true }}>
-                    <p>reports</p>
-                </GuardedRoute>
-                <GuardedRoute exact path='/dashboard'>
-                    <Redirect to='/dashboard/products'/>
-                </GuardedRoute>
-            </GuardProvider>
+            <div style={{ marginTop: '2%' }}>
+                <GuardProvider guards={[requireAuthentication]}>
+                    <GuardedRoute path='/dashboard/products/:id'>
+                        <Product/>
+                    </GuardedRoute>
+                    <GuardedRoute exact path='/dashboard/products'>
+                        <Products/>
+                    </GuardedRoute>
+                    <GuardedRoute exact path='/dashboard/reports' meta={{ authenticated: true }}>
+                        <p>reports</p>
+                    </GuardedRoute>
+                    <GuardedRoute exact path='/dashboard'>
+                        <Redirect to='/dashboard/products'/>
+                    </GuardedRoute>
+                </GuardProvider>
+            </div>
         </div>
     )
 }

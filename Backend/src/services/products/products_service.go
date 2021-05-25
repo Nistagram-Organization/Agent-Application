@@ -36,8 +36,8 @@ func (s *productsService) Get(id uint) (*products.Product, rest_errors.RestErr) 
 func (s *productsService) GetAll() []products.Product {
 	dao := products.Product{}
 	products := dao.GetAll()
-	for _, product := range products {
-		product.Image, _ = image_utils.LoadImage(product.Image)
+	for i := 0; i < len(products); i++ {
+		products[i].Image, _ = image_utils.LoadImage(products[i].Image)
 	}
 	return products
 }

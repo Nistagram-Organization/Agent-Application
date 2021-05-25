@@ -18,7 +18,8 @@ const Toaster = () => {
             right: '25%',
             left: '50%',
             marginLeft: '-150px',
-            width: '350px'
+            width: '350px',
+            zIndex: '99999999999'
         }}>
             {notification.notification}
         </Alert>

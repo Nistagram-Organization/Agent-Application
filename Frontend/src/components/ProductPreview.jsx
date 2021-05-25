@@ -10,7 +10,7 @@ const ProductPreview = ({ id, name, price, image }) => {
         <Card>
             <LinkContainer to={`/dashboard/products/${id}`}>
                 <Nav.Link>
-                    <Card.Img variant="top" src={image}/>
+                    <Card.Img variant="top" src={image} style={{ width: '200px', height: '200px' }}/>
                 </Nav.Link>
             </LinkContainer>
             <Card.Body>
