@@ -10,6 +10,7 @@ import * as yup from 'yup'
 import { setBuyOrder } from '../reducers/invoiceReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import productService from '../services/productService'
+import EditProductModal from './EditProductModal'
 
 const buyModalSchema = yup.object().shape({
     quantity: yup
@@ -23,13 +24,19 @@ const Product = () => {
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
 
-    const [modalVisible, setModalVisible] = useState(false)
+    const [buyModalVisible, setBuyModalVisible] = useState(false)
+    const [editModalVisible, setEditModalVisible] = useState(false)
 
-    const toggleModal = () => setModalVisible(!modalVisible)
+    const toggleBuyModal = () => setBuyModalVisible(!buyModalVisible)
+    const toggleEditModal = () => setEditModalVisible(!editModalVisible)
 
     const openBuyModal = async (values) => {
         dispatch(setBuyOrder(product.id, values.quantity))
-        toggleModal()
+        toggleBuyModal()
+    }
+
+    const openEditModal = () => {
+        toggleEditModal()
     }
 
     const deleteProduct = async () => {
@@ -60,7 +67,8 @@ const Product = () => {
 
     return (
         <div>
-            <BuyProductModal visible={modalVisible} toggle={toggleModal}/>
+            <BuyProductModal visible={buyModalVisible} toggle={toggleBuyModal}/>
+            <EditProductModal visible={editModalVisible} toggle={toggleEditModal}/>
             <Row>
                 <Col>
                     <h1>{product.name}</h1>
@@ -114,9 +122,13 @@ const Product = () => {
                         </Formik>
                     </Row>
                     <Row style={{ marginTop: '1%' }}>
-                        <Col sm={4}/>
                         <Col sm={7}>
-                            <Button variant="danger" onClick={deleteProduct}>Delete</Button>
+                            <Button onClick={openEditModal}>Edit product</Button>
+                        </Col>
+                    </Row>
+                    <Row style={{ marginTop: '1%' }}>
+                        <Col sm={7}>
+                            <Button variant="danger" onClick={deleteProduct}>Delete product</Button>
                         </Col>
                     </Row>
                 </Col>
