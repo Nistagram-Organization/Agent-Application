@@ -68,7 +68,7 @@ const Product = () => {
             </Row>
             <Row>
                 <Col>
-                    <img src={product.image} alt={product.name}/>
+                    <img src={product.image} alt={product.name} style={{ width: '300px', height: '300px' }}/>
                 </Col>
                 <Col>
                     <Row>
