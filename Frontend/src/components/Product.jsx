@@ -2,13 +2,14 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { getProduct } from '../reducers/productReducer'
-import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
+import { Button, Col, Form, Row } from 'react-bootstrap'
 import CurrencyFormat from 'react-currency-format'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { setBuyOrder } from '../reducers/invoiceReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import productService from '../services/productService'
+import Spinner from './Spinner'
 import ProductModal from './ProductModal'
 import { toggleModal } from '../reducers/modalReducer'
 
@@ -53,9 +54,7 @@ const Product = () => {
 
     if (!product) {
         return (
-            <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-            </Spinner>
+            <Spinner/>
         )
     }
 

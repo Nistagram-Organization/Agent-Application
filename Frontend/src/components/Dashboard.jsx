@@ -4,11 +4,12 @@ import { GuardedRoute, GuardProvider } from 'react-router-guards'
 import { Redirect } from 'react-router-dom'
 import Products from './Products'
 import Product from './Product'
+import Reports from './Reports'
 
 
 const Dashboard = () => {
 
-    const authenticated = false
+    const authenticated = true
     const requireAuthentication = (to, from, next) => {
         if(to.meta.authenticated) {
             if(authenticated) {
@@ -31,7 +32,7 @@ const Dashboard = () => {
                         <Products/>
                     </GuardedRoute>
                     <GuardedRoute exact path='/dashboard/reports' meta={{ authenticated: true }}>
-                        <p>reports</p>
+                        <Reports/>
                     </GuardedRoute>
                     <GuardedRoute exact path='/dashboard'>
                         <Redirect to='/dashboard/products'/>
