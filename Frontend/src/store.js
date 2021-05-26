@@ -5,12 +5,14 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 import productReducer from './reducers/productReducer'
 import invoiceReducer from './reducers/invoiceReducer'
+import modalReducer from './reducers/modalReducer'
 
 const reducer = combineReducers({
     authentication: authenticationReducer,
     notification: notificationReducer,
     products: productReducer,
-    invoices: invoiceReducer
+    invoices: invoiceReducer,
+    modals: modalReducer
 })
 
 const rootReducer = (state, action) => {

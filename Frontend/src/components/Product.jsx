@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { getProduct } from '../reducers/productReducer'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import CurrencyFormat from 'react-currency-format'
-import BuyProductModal from './BuyProductModal.jsx'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { setBuyOrder } from '../reducers/invoiceReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import productService from '../services/productService'
 import Spinner from './Spinner'
+import ProductModal from './ProductModal'
+import { toggleModal } from '../reducers/modalReducer'
 
 const buyModalSchema = yup.object().shape({
     quantity: yup
@@ -24,13 +25,13 @@ const Product = () => {
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
 
-    const [modalVisible, setModalVisible] = useState(false)
-
-    const toggleModal = () => setModalVisible(!modalVisible)
-
     const openBuyModal = async (values) => {
         dispatch(setBuyOrder(product.id, values.quantity))
-        toggleModal()
+        dispatch(toggleModal('BUY'))
+    }
+
+    const openEditModal = () => {
+        dispatch(toggleModal('EDIT'))
     }
 
     const deleteProduct = async () => {
@@ -59,7 +60,7 @@ const Product = () => {
 
     return (
         <div>
-            <BuyProductModal visible={modalVisible} toggle={toggleModal}/>
+            <ProductModal/>
             <Row>
                 <Col>
                     <h1>{product.name}</h1>
@@ -113,9 +114,13 @@ const Product = () => {
                         </Formik>
                     </Row>
                     <Row style={{ marginTop: '1%' }}>
-                        <Col sm={4}/>
                         <Col sm={7}>
-                            <Button variant="danger" onClick={deleteProduct}>Delete</Button>
+                            <Button onClick={openEditModal}>Edit product</Button>
+                        </Col>
+                    </Row>
+                    <Row style={{ marginTop: '1%' }}>
+                        <Col sm={7}>
+                            <Button variant="danger" onClick={deleteProduct}>Delete product</Button>
                         </Col>
                     </Row>
                 </Col>
