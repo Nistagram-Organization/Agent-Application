@@ -17,6 +17,11 @@ const createProduct = async (product) => {
     return response.data
 }
 
+const editProduct = async (product) => {
+    const response = await axios.put(`${BASE_URL}/products`, product)
+    return response.data
+}
+
 const deleteProduct = async (id) => {
     const response = await axios.delete(`${BASE_URL}/products/${id}`)
     return response.data
@@ -26,6 +31,7 @@ const bookService = {
     getProducts,
     getProduct,
     createProduct,
+    editProduct,
     deleteProduct
 }
 

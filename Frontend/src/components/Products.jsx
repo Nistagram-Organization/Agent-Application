@@ -4,7 +4,7 @@ import { getProducts } from '../reducers/productReducer'
 import { Row, Col } from 'react-flexa'
 import ProductPreview from './ProductPreview'
 import CreateProduct from './CreateProduct'
-import CreateProductModal from './CreateProductModal'
+import ProductModal from './ProductModal'
 
 const Products = () => {
     const dispatch = useDispatch()
@@ -19,7 +19,7 @@ const Products = () => {
 
     return (
         <>
-            <CreateProductModal toggle={toggleModal} visible={modalVisible}/>
+            <ProductModal/>
             <Row justifyContent='center'>
                 {
                     products.map(p =>

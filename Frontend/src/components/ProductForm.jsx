@@ -4,10 +4,12 @@ import { Formik } from 'formik'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import ImageUploader from 'react-images-upload'
 import { toBase64 } from '../image_utils'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
+import { useHistory } from 'react-router-dom'
 import productService from '../services/productService'
 import { getProducts } from '../reducers/productReducer'
+import { toggleModal } from '../reducers/modalReducer'
 
 const productSchema = yup.object().shape({
     name: yup
@@ -26,27 +28,40 @@ const productSchema = yup.object().shape({
         .min(0, 'Stock must be >= 0')
 })
 
-const CreateProductForm = ({ toggleModal }) => {
+const ProductForm = () => {
     const dispatch = useDispatch()
+    const history = useHistory()
+    const product = useSelector(state => state.products.shown)
+    const action = useSelector(state => state.modals.action)
 
-    const [image, setImage] = useState(null)
+    const isCreateForm = () => {
+        return action === '' || action === 'CREATE'
+    }
+
+    const [image, setImage] = useState(isCreateForm() ? null : product.image)
 
     const submitForm = async (values) => {
         if(!image) {
             dispatch(setNotification('Product image must be specified', 'error', 3000))
             return
         }
-        const product = {
+
+        const productToProcess = {
             ...values,
-            image: await toBase64(image[0])
+            image: isCreateForm() ? await toBase64(image[0]) : image
         }
+
         try {
-            await productService.createProduct(product)
-            dispatch(setNotification('Product created successfully', 'success', 3000))
-            dispatch(getProducts())
-            toggleModal()
+            if (!isCreateForm())
+                productToProcess.id = product.id
+            isCreateForm() ? await productService.createProduct(productToProcess) :
+                await productService.editProduct(productToProcess)
+            dispatch(setNotification(isCreateForm() ? 'Product created successfully' :
+                'Product edited successfully', 'success', 3000))
+            isCreateForm() ? dispatch(getProducts()) : history.push('/dashboard/products')
+            dispatch(toggleModal(''))
         } catch (e) {
-            dispatch(setNotification(e.message, 'error', 3000))
+            dispatch(setNotification(e.response.data.message, 'error', 3000))
         }
     }
 
@@ -55,10 +70,10 @@ const CreateProductForm = ({ toggleModal }) => {
             validationSchema={productSchema}
             onSubmit={submitForm}
             initialValues={{
-                name: '',
-                description: '',
-                price: 0,
-                on_stock: 0
+                name: isCreateForm() ? '' : product.name,
+                description: isCreateForm() ? '' : product.description,
+                price: isCreateForm() ? 0 : product.price,
+                on_stock: isCreateForm() ? 0 : product.on_stock
             }}
         >
             {(formik) => (
@@ -132,20 +147,32 @@ const CreateProductForm = ({ toggleModal }) => {
                         <Form.Label column sm={4}>Product image</Form.Label>
                         <Col sm={8}>
                             <ImageUploader
-                                onChange={(i) => setImage(i)}
+                                onChange={(i) => {
+                                    if (isCreateForm()) {
+                                        setImage(i)
+                                        return
+                                    }
+                                    if (i.length === 0) {
+                                        setImage(undefined)
+                                        return
+                                    }
+                                    toBase64(i[0]).then(res => setImage(res))
+                                }}
                                 imgExtension={['.jpg', '.png', '.jpeg']}
                                 buttonText='Choose image'
                                 label='Max file size: 5mb, accepted: jpg, jpeg, png'
                                 singleImage={true}
                                 buttonType='button'
+                                withPreview={!isCreateForm()}
+                                defaultImages={isCreateForm() ? [] : [image]}
                             />
                         </Col>
                     </Form.Group>
-                    <Button type='submit'>Create product</Button>
+                    <Button type='submit'>{isCreateForm() ? 'Create product' : 'Edit product'}</Button>
                 </Form>
             )}
         </Formik>
     )
 }
 
-export default CreateProductForm
+export default ProductForm

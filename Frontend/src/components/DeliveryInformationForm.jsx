@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
 import invoicesService from '../services/invoicesService'
 import { setBuyOrder } from '../reducers/invoiceReducer'
+import { toggleModal } from '../reducers/modalReducer'
 
 const deliveryInformationSchema = yup.object().shape({
     name: yup
@@ -30,7 +31,7 @@ const deliveryInformationSchema = yup.object().shape({
         .required('Zip code must be specified')
 })
 
-const DeliveryInformationForm = ({ toggleModal }) => {
+const DeliveryInformationForm = () => {
     const dispatch = useDispatch()
     const productID = useSelector(state => state.invoices.productId)
     const quantity = useSelector(state => state.invoices.quantity)
@@ -51,7 +52,7 @@ const DeliveryInformationForm = ({ toggleModal }) => {
             dispatch(setNotification(e.response.data.message, 'error', 3000))
         }
         dispatch(setBuyOrder(0, 0))
-        toggleModal()
+        dispatch(toggleModal(''))
     }
 
     return (

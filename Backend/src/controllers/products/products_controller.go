@@ -18,6 +18,7 @@ type productsControllerInterface interface {
 	GetAll(*gin.Context)
 	Create(*gin.Context)
 	Delete(*gin.Context)
+	Edit(*gin.Context)
 }
 
 type productsController struct{}
@@ -80,4 +81,20 @@ func (c *productsController) Create(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusCreated, result)
+}
+
+func (c *productsController) Edit(ctx *gin.Context) {
+	var product model_products.Product
+	if err := ctx.ShouldBindJSON(&product); err != nil {
+		restErr := rest_errors.NewBadRequestError("invalid json body")
+		ctx.JSON(restErr.Status(), restErr)
+		return
+	}
+
+	result, editErr := products.ProductsService.Edit(&product)
+	if editErr != nil {
+		ctx.JSON(editErr.Status(), editErr)
+		return
+	}
+	ctx.JSON(http.StatusOK, result)
 }
