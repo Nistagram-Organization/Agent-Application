@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { getProduct } from '../reducers/productReducer'
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import CurrencyFormat from 'react-currency-format'
-import BuyProductModal from './BuyProductModal.jsx'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { setBuyOrder } from '../reducers/invoiceReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import productService from '../services/productService'
-import EditProductModal from './EditProductModal'
+import ProductModal from './ProductModal'
+import { toggleModal } from '../reducers/modalReducer'
 
 const buyModalSchema = yup.object().shape({
     quantity: yup
@@ -24,19 +24,13 @@ const Product = () => {
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
 
-    const [buyModalVisible, setBuyModalVisible] = useState(false)
-    const [editModalVisible, setEditModalVisible] = useState(false)
-
-    const toggleBuyModal = () => setBuyModalVisible(!buyModalVisible)
-    const toggleEditModal = () => setEditModalVisible(!editModalVisible)
-
     const openBuyModal = async (values) => {
         dispatch(setBuyOrder(product.id, values.quantity))
-        toggleBuyModal()
+        dispatch(toggleModal('BUY'))
     }
 
     const openEditModal = () => {
-        toggleEditModal()
+        dispatch(toggleModal('EDIT'))
     }
 
     const deleteProduct = async () => {
@@ -67,8 +61,7 @@ const Product = () => {
 
     return (
         <div>
-            <BuyProductModal visible={buyModalVisible} toggle={toggleBuyModal}/>
-            <EditProductModal visible={editModalVisible} toggle={toggleEditModal}/>
+            <ProductModal/>
             <Row>
                 <Col>
                     <h1>{product.name}</h1>
