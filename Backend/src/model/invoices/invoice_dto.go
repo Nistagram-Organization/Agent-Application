@@ -1,8 +1,8 @@
 package invoices
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/src/models/delivery_informations"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoice_items"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/delivery_informations"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/invoice_items"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 )
 
