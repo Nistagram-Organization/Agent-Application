@@ -14,6 +14,7 @@ import (
 	invoicesServ "github.com/Nistagram-Organization/Agent-Application/src/services/invoices"
 	productReportsServ "github.com/Nistagram-Organization/Agent-Application/src/services/product_reports"
 	productsServ "github.com/Nistagram-Organization/Agent-Application/src/services/products"
+	"github.com/Nistagram-Organization/Agent-Application/src/utils/image_utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,8 @@ func StartApplication() {
 
 	productsRepository := productsRepo.NewProductsRepository()
 	invoiceItemsRepository := invoice_items.NewInvoiceItemsRepository()
-	productsService := productsServ.NewProductsService(productsRepository, invoiceItemsRepository, "temp")
+	imageUtilsService := image_utils.NewImageUtilsService()
+	productsService := productsServ.NewProductsService(productsRepository, invoiceItemsRepository, imageUtilsService, "temp")
 	productsController := products.NewProductsController(productsService)
 
 	productReportsController := product_reports.NewProductReportsController(

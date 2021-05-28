@@ -19,13 +19,15 @@ type ProductsService interface {
 type productsService struct {
 	productsRepository     productsRepo.ProductsRepository
 	invoiceItemsRepository invoice_items.InvoiceItemsRepository
+	imageUtilsService      image_utils.ImageUtilsService
 	tempFolder             string
 }
 
-func NewProductsService(productsRepository productsRepo.ProductsRepository, invoiceItemsRepository invoice_items.InvoiceItemsRepository, tempFolder string) ProductsService {
+func NewProductsService(productsRepository productsRepo.ProductsRepository, invoiceItemsRepository invoice_items.InvoiceItemsRepository, imageUtilsService image_utils.ImageUtilsService, tempFolder string) ProductsService {
 	return &productsService{
 		productsRepository:     productsRepository,
 		invoiceItemsRepository: invoiceItemsRepository,
+		imageUtilsService:      imageUtilsService,
 		tempFolder:             tempFolder,
 	}
 }
@@ -35,14 +37,14 @@ func (s *productsService) Get(id uint) (*products.Product, rest_errors.RestErr) 
 	if err != nil {
 		return nil, err
 	}
-	product.Image, _ = image_utils.LoadImage(product.Image)
+	product.Image, _ = s.imageUtilsService.LoadImage(product.Image)
 	return product, nil
 }
 
 func (s *productsService) GetAll() []products.Product {
 	products := s.productsRepository.GetAll()
 	for i := 0; i < len(products); i++ {
-		products[i].Image, _ = image_utils.LoadImage(products[i].Image)
+		products[i].Image, _ = s.imageUtilsService.LoadImage(products[i].Image)
 	}
 	return products
 }
@@ -52,7 +54,7 @@ func (s *productsService) Create(product *products.Product) (*products.Product, 
 		return nil, err
 	}
 
-	imagePath, err := image_utils.SaveImage(product.Image, s.tempFolder)
+	imagePath, err := s.imageUtilsService.SaveImage(product.Image, s.tempFolder)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +73,7 @@ func (s *productsService) Edit(product *products.Product) (*products.Product, re
 		return nil, getErr
 	}
 
-	imagePath, err := image_utils.SaveImage(product.Image, s.tempFolder)
+	imagePath, err := s.imageUtilsService.SaveImage(product.Image, s.tempFolder)
 	if err != nil {
 		return nil, err
 	}
