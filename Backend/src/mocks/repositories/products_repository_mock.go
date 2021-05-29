@@ -32,9 +32,17 @@ func (p *ProductRepositoryMock) Create(product *products.Product) (*products.Pro
 }
 
 func (p *ProductRepositoryMock) Update(product *products.Product) (*products.Product, rest_errors.RestErr) {
-	return nil, nil
+	args := p.Called(product)
+	if args.Get(1) == nil {
+		return args.Get(0).(*products.Product), nil
+	}
+	return nil, args.Get(1).(rest_errors.RestErr)
 }
 
 func (p *ProductRepositoryMock) Delete(product *products.Product) rest_errors.RestErr {
-	return nil
+	args := p.Called(product)
+	if args.Get(0) == nil {
+		return nil
+	}
+	return args.Get(0).(rest_errors.RestErr)
 }

@@ -11,5 +11,9 @@ type InvoiceItemsRepositoryMock struct {
 }
 
 func (i *InvoiceItemsRepositoryMock) GetByProduct(productId uint) (*invoice_items.InvoiceItem, rest_errors.RestErr) {
-	return nil, nil
+	args := i.Called(productId)
+	if args.Get(1) == nil {
+		return args.Get(0).(*invoice_items.InvoiceItem), nil
+	}
+	return nil, args.Get(1).(rest_errors.RestErr)
 }
