@@ -2,11 +2,11 @@ package application
 
 import (
 	"github.com/Nistagram-Organization/Agent-Application/src/datasources/mysql/agent_application_db"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/credentials"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/delivery_informations"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoice_items"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/products"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/credentials"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/delivery_informations"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/invoice_items"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/invoices"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/products"
 	"log"
 )
 

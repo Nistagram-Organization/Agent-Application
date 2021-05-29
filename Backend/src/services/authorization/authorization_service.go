@@ -1,7 +1,9 @@
 package authorization
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/src/models/credentials"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/credentials"
+	credentialsRepo "github.com/Nistagram-Organization/Agent-Application/src/repositories/credentials"
+	"github.com/Nistagram-Organization/Agent-Application/src/utils/bcrypt_utils"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/dgrijalva/jwt-go"
 	"os"
@@ -13,15 +15,20 @@ const (
 	jwtKey                  = "jwt_key"
 )
 
-var (
-	AuthorizationService authorizationServiceInterface = &authorizationService{}
-)
-
-type authorizationServiceInterface interface {
+type AuthorizationService interface {
 	Login(credentials.Credentials) (string, rest_errors.RestErr)
+	Validate(*credentials.Credentials) rest_errors.RestErr
 }
 
-type authorizationService struct{}
+type authorizationService struct {
+	credentialsRepository credentialsRepo.CredentialsRepository
+}
+
+func NewAuthorizationService(credentialsRepository credentialsRepo.CredentialsRepository) AuthorizationService {
+	return &authorizationService{
+		credentialsRepository: credentialsRepository,
+	}
+}
 
 func getExpiresIn() int64 {
 	return time.Now().Add(expirationTimeInMinutes * time.Minute).Unix()
@@ -44,8 +51,21 @@ func getNewAccessToken(username string) (string, rest_errors.RestErr) {
 }
 
 func (as *authorizationService) Login(credentials credentials.Credentials) (string, rest_errors.RestErr) {
-	if err := credentials.Validate(); err != nil {
+	if err := as.Validate(&credentials); err != nil {
 		return "", err
 	}
 	return getNewAccessToken(credentials.Username)
+}
+
+func (as *authorizationService) Validate(credentials *credentials.Credentials) rest_errors.RestErr {
+	plainPassword := credentials.Password
+	dbCredentials, err := as.credentialsRepository.GetByUsername(credentials.Username)
+	if err != nil {
+		return err
+	}
+
+	if !bcrypt_utils.CompareHashAndValue(dbCredentials.Password, plainPassword) {
+		return rest_errors.NewUnauthorizedError("invalid password")
+	}
+	return nil
 }

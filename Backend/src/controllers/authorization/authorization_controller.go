@@ -1,22 +1,25 @@
 package authorization
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/src/models/credentials"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/credentials"
 	"github.com/Nistagram-Organization/Agent-Application/src/services/authorization"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-var (
-	AuthorizationController authorizationControllerInterface = &authorizationController{}
-)
-
-type authorizationControllerInterface interface {
+type AuthorizationController interface {
 	Login(*gin.Context)
 }
 
 type authorizationController struct {
+	authorizationService authorization.AuthorizationService
+}
+
+func NewAuthorizationController(authorizationService authorization.AuthorizationService) AuthorizationController {
+	return &authorizationController{
+		authorizationService: authorizationService,
+	}
 }
 
 func (ac *authorizationController) Login(ctx *gin.Context) {
@@ -27,7 +30,7 @@ func (ac *authorizationController) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := authorization.AuthorizationService.Login(credentials)
+	token, err := ac.authorizationService.Login(credentials)
 	if err != nil {
 		ctx.JSON(err.Status(), err)
 		return

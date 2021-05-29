@@ -1,7 +1,7 @@
 package products
 
 import (
-	model_products "github.com/Nistagram-Organization/Agent-Application/src/models/products"
+	productsMod "github.com/Nistagram-Organization/Agent-Application/src/model/products"
 	"github.com/Nistagram-Organization/Agent-Application/src/services/products"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/gin-gonic/gin"
@@ -9,11 +9,7 @@ import (
 	"strconv"
 )
 
-var (
-	ProductsController productsControllerInterface = &productsController{}
-)
-
-type productsControllerInterface interface {
+type ProductsController interface {
 	Get(*gin.Context)
 	GetAll(*gin.Context)
 	Create(*gin.Context)
@@ -21,7 +17,15 @@ type productsControllerInterface interface {
 	Edit(*gin.Context)
 }
 
-type productsController struct{}
+type productsController struct {
+	productsService products.ProductsService
+}
+
+func NewProductsController(productsService products.ProductsService) ProductsController {
+	return &productsController{
+		productsService: productsService,
+	}
+}
 
 func getProductId(productIdParam string) (uint, rest_errors.RestErr) {
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
@@ -38,7 +42,7 @@ func (c *productsController) Get(ctx *gin.Context) {
 		return
 	}
 
-	product, getErr := products.ProductsService.Get(productId)
+	product, getErr := c.productsService.Get(productId)
 	if getErr != nil {
 		ctx.JSON(getErr.Status(), getErr)
 		return
@@ -54,7 +58,7 @@ func (c *productsController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	delErr := products.ProductsService.Delete(productId)
+	delErr := c.productsService.Delete(productId)
 	if delErr != nil {
 		ctx.JSON(delErr.Status(), delErr)
 		return
@@ -64,18 +68,18 @@ func (c *productsController) Delete(ctx *gin.Context) {
 }
 
 func (c *productsController) GetAll(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, products.ProductsService.GetAll())
+	ctx.JSON(http.StatusOK, c.productsService.GetAll())
 }
 
 func (c *productsController) Create(ctx *gin.Context) {
-	var product model_products.Product
+	var product productsMod.Product
 	if err := ctx.ShouldBindJSON(&product); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json body")
 		ctx.JSON(restErr.Status(), restErr)
 		return
 	}
 
-	result, saveErr := products.ProductsService.Create(&product)
+	result, saveErr := c.productsService.Create(&product)
 	if saveErr != nil {
 		ctx.JSON(saveErr.Status(), saveErr)
 		return
@@ -84,14 +88,14 @@ func (c *productsController) Create(ctx *gin.Context) {
 }
 
 func (c *productsController) Edit(ctx *gin.Context) {
-	var product model_products.Product
+	var product productsMod.Product
 	if err := ctx.ShouldBindJSON(&product); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json body")
 		ctx.JSON(restErr.Status(), restErr)
 		return
 	}
 
-	result, editErr := products.ProductsService.Edit(&product)
+	result, editErr := c.productsService.Edit(&product)
 	if editErr != nil {
 		ctx.JSON(editErr.Status(), editErr)
 		return

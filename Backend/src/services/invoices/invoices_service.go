@@ -1,21 +1,28 @@
 package invoices
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/src/models/invoices"
-	"github.com/Nistagram-Organization/Agent-Application/src/models/products"
+	"github.com/Nistagram-Organization/Agent-Application/src/model/invoices"
+	invoicesRepo "github.com/Nistagram-Organization/Agent-Application/src/repositories/invoices"
+	productsRepo "github.com/Nistagram-Organization/Agent-Application/src/repositories/products"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/rest_errors"
 	"github.com/Nistagram-Organization/Agent-Application/src/utils/time_utils"
 )
 
-var (
-	InvoicesService invoicesServiceInterface = &invoicesService{}
-)
-
-type invoicesServiceInterface interface {
-	BuyProduct(invoice *invoices.Invoice) rest_errors.RestErr
+type InvoicesService interface {
+	BuyProduct(*invoices.Invoice) rest_errors.RestErr
 }
 
-type invoicesService struct{}
+type invoicesService struct {
+	productsRepository productsRepo.ProductsRepository
+	invoicesRepository invoicesRepo.InvoicesRepository
+}
+
+func NewInvoicesService(productsRepository productsRepo.ProductsRepository, invoicesRepository invoicesRepo.InvoicesRepository) InvoicesService {
+	return &invoicesService{
+		productsRepository: productsRepository,
+		invoicesRepository: invoicesRepository,
+	}
+}
 
 func (s *invoicesService) BuyProduct(invoice *invoices.Invoice) rest_errors.RestErr {
 	if err := invoice.Validate(); err != nil {
@@ -28,9 +35,9 @@ func (s *invoicesService) BuyProduct(invoice *invoices.Invoice) rest_errors.Rest
 			return err
 		}
 
-		product := products.Product{ID: item.ProductID}
+		product, err := s.productsRepository.Get(item.ProductID)
 
-		if err := product.Get(); err != nil {
+		if err != nil {
 			return err
 		}
 
@@ -39,7 +46,8 @@ func (s *invoicesService) BuyProduct(invoice *invoices.Invoice) rest_errors.Rest
 		}
 		product.OnStock -= item.Quantity
 
-		if err := product.Update(); err != nil {
+		product, err = s.productsRepository.Update(product)
+		if err != nil {
 			return err
 		}
 
@@ -49,9 +57,10 @@ func (s *invoicesService) BuyProduct(invoice *invoices.Invoice) rest_errors.Rest
 
 	invoice.Date = time_utils.Now()
 	invoice.Total = total
-	if err := invoice.Save(); err != nil {
+
+	_, err := s.invoicesRepository.Save(invoice)
+	if err != nil {
 		return err
 	}
-
 	return nil
 }

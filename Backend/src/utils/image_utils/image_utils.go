@@ -19,6 +19,17 @@ const (
 	pngType = "image/png"
 )
 
+type ImageUtilsService interface {
+	SaveImage(string, string) (string, rest_errors.RestErr)
+	LoadImage(string) (string, rest_errors.RestErr)
+}
+
+type imageUtilsService struct{}
+
+func NewImageUtilsService() ImageUtilsService {
+	return &imageUtilsService{}
+}
+
 func encodeBytesToBase64String(bytes []byte) string {
 	var base64Encoding string
 	mimeType := http.DetectContentType(bytes)
@@ -88,7 +99,7 @@ func readBytesFromFile(path string) ([]byte, rest_errors.RestErr) {
 	return bytes, nil
 }
 
-func SaveImage(base64Encoded string, basePath string) (string, rest_errors.RestErr) {
+func (i *imageUtilsService) SaveImage(base64Encoded string, basePath string) (string, rest_errors.RestErr) {
 	imageType := returnImageType(base64Encoded)
 	image, err := decodeBase64String(base64Encoded, imageType)
 	if err != nil {
@@ -110,7 +121,7 @@ func SaveImage(base64Encoded string, basePath string) (string, rest_errors.RestE
 	return imagePath, nil
 }
 
-func LoadImage(path string) (string, rest_errors.RestErr) {
+func (i *imageUtilsService) LoadImage(path string) (string, rest_errors.RestErr) {
 	bytes, err := readBytesFromFile(path)
 	if err != nil {
 		return "", err
