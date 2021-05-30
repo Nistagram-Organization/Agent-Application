@@ -7,20 +7,6 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  # Create version
-  create-version:
-    name: Semantic version
-    runs-on: ubuntu-latest
-    steps:
-      - uses: paulhatch/semantic-version@v4.0.2
-        with:
-          tag_prefix: ""
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          format: "${major}.${minor}.${patch}"
-          short_tags: false
-          bump_each_commit: true
-
   # Build backend application
   build-backend:
     strategy:
@@ -37,13 +23,23 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Create semantic version
+      id: versioning
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        tag_prefix: ""
+        major_pattern: "(MAJOR)"
+        minor_pattern: "(MINOR)"
+        format: "${major}.${minor}.${patch}"
+        short_tags: false
+        bump_each_commit: true
     - name: Build exe
       working-directory: ./Backend
       run: go build -o ./Agent-Application.exe ./src/main.go
     - name: Publish backend application artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Backend-application-${{ version }}
+        name: Backend-application-${{ steps.versioning.outputs.version }}
         path: ./Backend/Agent-Application.exe
       if: ${{ matrix.os == 'ubuntu-latest' }}
   
@@ -58,6 +54,16 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Create semantic version
+      id: versioning
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        tag_prefix: ""
+        major_pattern: "(MAJOR)"
+        minor_pattern: "(MINOR)"
+        format: "${major}.${minor}.${patch}"
+        short_tags: false
+        bump_each_commit: true
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -71,7 +77,7 @@ jobs:
     - name: Publish frontend application artifact
       uses: actions/upload-artifact@v2
       with: 
-        name: Frontend-application-${{ version }}
+        name: Frontend-application-${{ steps.versioning.outputs.version }}
         path: ./Frontend/build
       if: ${{ matrix.os == 'ubuntu-latest' }}
 
