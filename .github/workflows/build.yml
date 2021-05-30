@@ -28,9 +28,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Backend application
-        path: ./Agent-Application.exe
+        path: ./Backend/Agent-Application.exe
       if: ${{ matrix.os == 'ubuntu-latest' }}
-      working-directory: ./Backend
   
   # Build frontend application on mac and ubuntu
   build-frontend-mac-ubuntu:
@@ -55,9 +54,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with: 
         name: Frontend application
-        path: ./build
+        path: ./Frontend/build
       if: ${{ matrix.os == 'ubuntu-latest' }}
-      working-directory: ./Frontend
 
   # Build frontend application on windows
   build-frontend-windows:
