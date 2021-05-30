@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: paulhatch/semantic-version@v4.0.2
-      with:
-        tag_prefix: ""
-        major_pattern: "(MAJOR)"
-        minor_pattern: "(MINOR)"
-        format: "${major}.${minor}.${patch}"
-        short_tags: false
-        bump_each_commit: true
+        with:
+          tag_prefix: ""
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          format: "${major}.${minor}.${patch}"
+          short_tags: false
+          bump_each_commit: true
 
   # Build backend application
   build-backend:
