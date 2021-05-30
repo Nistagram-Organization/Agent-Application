@@ -25,12 +25,12 @@ jobs:
       working-directory: ./Backend
       run: go build -o ./Agent-Application.exe ./src/main.go
     - name: Publish backend application artifact
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      working-directory: ./Backend
       uses: actions/upload-artifact@v2
       with:
         name: Backend application
         path: ./Agent-Application.exe
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      working-directory: ./Backend
   
   # Build frontend application on mac and ubuntu
   build-frontend-mac-ubuntu:
@@ -52,12 +52,12 @@ jobs:
       working-directory: ./Frontend
       run: CI=false npm run build --if-present
     - name: Publish frontend application artifact
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      working-directory: ./Frontend
       uses: actions/upload-artifact@v2
       with: 
         name: Frontend application
         path: ./build
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      working-directory: ./Frontend
 
   # Build frontend application on windows
   build-frontend-windows:
