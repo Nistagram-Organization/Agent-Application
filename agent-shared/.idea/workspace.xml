@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="5a893cc2-78a9-45cf-84da-d90fc495bcd8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/.idea/agent-invoices.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/application/application.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/controllers/invoice/invoice_controller.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/datasources/mysql/agent_application_db.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/repositories/invoice/invoice_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/repositories/product/product_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/services/invoice/invoice_service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-invoices/src/services/invoice/invoice_service_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/.idea/agent-products.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/application/application.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/controllers/product/product_controller.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/datasources/mysql/agent_application_db.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/repositories/invoice_item/invoice_item_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/repositories/product/product_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/services/product/product_service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/services/product/product_service_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-products/src/utils/image_utils/image_utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/.idea/agent-reports.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/application/application.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/controllers/product_report/product_report_controller.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/datasources/mysql/agent_application_db.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/repositories/product_report/product_report_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../agent-reports/src/services/product_report/product_report_service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/agent-shared.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/datasources/database_client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mocks/repositories/invoice_items_repository_mock.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mocks/repositories/invoices_repository_mock.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mocks/repositories/products_repository_mock.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mocks/services/image_utils_service_mock.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/delivery_information/delivery_information.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/invoice/invoice.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/invoice_item/invoice_item.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/product/product.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/product_report/product_report.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repositories/invoice/invoice_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repositories/invoice_item/invoice_item_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repositories/product/product_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/repositories/product_report/product_report_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/rest_error/rest_error.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/time_utils/time_utils.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://E:/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1tTkYMNKjB60AEihRRmaS2n9Yyd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Nistagram\Agent-Application\agent-shared\src\utils" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+</project>
