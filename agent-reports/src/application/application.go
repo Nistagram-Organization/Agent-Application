@@ -40,5 +40,5 @@ func StartApplication() {
 
 	router.GET("/reports", productReportController.GenerateReport)
 
-	router.Run(":8080")
+	router.Run(":8082")
 }

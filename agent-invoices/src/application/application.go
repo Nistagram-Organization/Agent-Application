@@ -44,5 +44,5 @@ func StartApplication() {
 
 	router.POST("/invoices", invoicesController.BuyProduct)
 
-	router.Run(":8082")
+	router.Run(":8083")
 }
