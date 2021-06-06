@@ -2,8 +2,8 @@ package invoice
 
 import (
 	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/services/invoice"
-	model "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/model/invoice"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/rest_error"
+	model "github.com/Nistagram-Organization/agent-shared/src/model/invoice"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

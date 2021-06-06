@@ -3,7 +3,7 @@ package image_utils
 import (
 	"bytes"
 	"encoding/base64"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/rest_error"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
 	"github.com/nu7hatch/gouuid"
 	"image"
 	"image/jpeg"

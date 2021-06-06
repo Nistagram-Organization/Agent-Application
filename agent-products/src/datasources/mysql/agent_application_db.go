@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/datasources"
+	"github.com/Nistagram-Organization/agent-shared/src/datasources"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"

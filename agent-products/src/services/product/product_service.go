@@ -2,10 +2,10 @@ package product
 
 import (
 	"github.com/Nistagram-Organization/Agent-Application/agent-products/src/utils/image_utils"
-	model "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/model/product"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/repositories/invoice_item"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/repositories/product"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/rest_error"
+	model "github.com/Nistagram-Organization/agent-shared/src/model/product"
+	"github.com/Nistagram-Organization/agent-shared/src/repositories/invoice_item"
+	"github.com/Nistagram-Organization/agent-shared/src/repositories/product"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
 )
 
 type ProductService interface {

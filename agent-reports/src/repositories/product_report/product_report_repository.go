@@ -1,9 +1,9 @@
 package product_report
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/datasources"
-	model "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/model/product_report"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/repositories/product_report"
+	"github.com/Nistagram-Organization/agent-shared/src/datasources"
+	model "github.com/Nistagram-Organization/agent-shared/src/model/product_report"
+	"github.com/Nistagram-Organization/agent-shared/src/repositories/product_report"
 	"gorm.io/gorm"
 )
 

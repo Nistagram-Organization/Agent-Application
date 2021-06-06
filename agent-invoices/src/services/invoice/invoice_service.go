@@ -1,11 +1,11 @@
 package invoice
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/model/invoice"
-	invoiceRepo "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/repositories/invoice"
-	productRepo "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/repositories/product"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/rest_error"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/time_utils"
+	"github.com/Nistagram-Organization/agent-shared/src/model/invoice"
+	invoiceRepo "github.com/Nistagram-Organization/agent-shared/src/repositories/invoice"
+	productRepo "github.com/Nistagram-Organization/agent-shared/src/repositories/product"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/time_utils"
 )
 
 type InvoicesService interface {

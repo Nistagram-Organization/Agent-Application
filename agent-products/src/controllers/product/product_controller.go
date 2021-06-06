@@ -2,8 +2,8 @@ package product
 
 import (
 	"github.com/Nistagram-Organization/Agent-Application/agent-products/src/services/product"
-	model "github.com/Nistagram-Organization/Agent-Application/agent-shared/src/model/product"
-	"github.com/Nistagram-Organization/Agent-Application/agent-shared/src/utils/rest_error"
+	model "github.com/Nistagram-Organization/agent-shared/src/model/product"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
