@@ -32,6 +32,15 @@
       "syslog": false,
       "stdout": true,
       "format": "default"
+    },
+    "sd_providers": {
+      "providers": {"dns": true},
+      "hosts": [
+        {
+          "sd": "dns",
+          "host": "agent-products.service.consul"
+        }
+      ]
     }
   },
   "timeout": "3000ms",
@@ -48,13 +57,13 @@
         {
           "url_pattern": "/products",
           "host": [
-            "http://127.0.0.1:8081"
+            "agent-products.service.consul"
           ],
           "encoding": "no-op",
-          "sd": "static",
+          "sd": "dns",
           "method": "GET",
           "extra_config": {},
-          "disable_host_sanitize": false
+          "disable_host_sanitize": true
         }
       ]
     },

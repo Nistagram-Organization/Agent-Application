@@ -1,0 +1,6 @@
+{
+	"service": {
+		"name": "agent-products",
+		"port": 8081
+	}
+}

@@ -1,0 +1,6 @@
+{
+	"service": {
+		"name": "agent-gateway",
+		"port": 8080
+	}
+}

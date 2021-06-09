@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/devopsfaith/krakend/sd/dnssrv"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -40,6 +41,7 @@ func main() {
 		log.Fatal("ERROR:", err.Error())
 	}
 
+	dnssrv.Register()
 	router.Use(cors.Default())
 
 	routerFactory := krakendgin.DefaultFactory(proxy.DefaultFactory(logger), logger)
