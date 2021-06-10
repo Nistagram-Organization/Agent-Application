@@ -1,0 +1,31 @@
+name: Main CI workflow
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  CI:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Create semantic version
+      id: versioning
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        tag_prefix: ""
+        major_pattern: "(MAJOR)"
+        minor_pattern: "(MINOR)"
+        format: "${major}.${minor}.${patch}"
+        short_tags: false
+        bump_each_commit: true
+    - name: Build, upload to artifact repository and publish to DockerHub
+      run: ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKERHUB_USERNAME }}
+    - name: Emit repository_dispatch
+          uses: mvasigh/dispatch-action@main
+          with:
+            token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            event_type: ci_main_pipeline_done

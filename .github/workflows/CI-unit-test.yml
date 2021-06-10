@@ -1,0 +1,35 @@
+name: Run unit tests
+on:
+  repository_dispatch:
+    types: [ci_main_pipeline_done]
+  pull_request:
+    branches:
+        - main
+        - development
+    types: [opened, synchronize]
+
+jobs:     
+  # Run unit tests
+  unit-test:
+    strategy:
+      matrix:
+        go-version: [1.15.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+    - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+    - name: Run agent-products unit tests
+      working-directory: ./agent-products
+      run: go test ./...
+    - name: Run agent-reports unit tests
+      working-directory: ./agent-reports
+      run: go test ./...
+    - name: Run agent-invoices unit tests
+      working-directory: ./agent-invoices
+      run: go test ./...

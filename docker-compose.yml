@@ -78,3 +78,10 @@ services:
       - agent-products
       - agent-invoices
       - agent-reports
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./Frontend
+    ports:
+      - 3000:3000
