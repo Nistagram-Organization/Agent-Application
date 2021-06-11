@@ -8,6 +8,14 @@ jobs:
     if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
+    - name: Setup go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.15.x
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
     - name: Checkout code
       uses: actions/checkout@v2
       with:
@@ -22,17 +30,51 @@ jobs:
         format: "${major}.${minor}.${patch}"
         short_tags: false
         bump_each_commit: true
-    - name: Build, upload to artifact repository and publish to DockerHub
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Run agent-products unit tests
+      working-directory: ./agent-products
+      run: go test ./...
+    - name: Run agent-reports unit tests
+      working-directory: ./agent-reports
+      run: go test ./...
+    - name: Run agent-invoices unit tests
+      working-directory: ./agent-invoices
+      run: go test ./...
+    - name: Build image and publish to DockerHub
       run: |
         chmod 777 ./build-upload-publish.sh
         ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}
-    - name: Invoke code analysis
-      uses: benc-uk/workflow-dispatch@v1
+    - name: Build backend artifacts
+      run: |
+        go build -o ./artifacts/backend/agent-products:${{ steps.versioning.outputs.version }}.exe ./agent-products/src/main.go
+        go build -o ./artifacts/backend/agent-invoices:${{ steps.versioning.outputs.version }}.exe ./agent-invoices/src/main.go
+        go build -o ./artifacts/backend/agent-reports:${{ steps.versioning.outputs.version }}.exe ./agent-reports/src/main.go
+    - name: Build frontend artifacts
+      working-directory: ./Frontend
+      run: |
+        npm ci
+        CI=false npm run build --if-present
+    - name: Upload agent-products backend artifact to repository
+      uses: actions/upload-artifact@v2
       with:
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        workflow: Analyze code with Sonar Cloud
-    - name: Invoke unit tests
-      uses: benc-uk/workflow-dispatch@v1
+        name: agent-products:${{ steps.versioning.outputs.version }}
+        path: ./artifacts/backend/agent-products:${{ steps.versioning.outputs.version }}.exe
+    - name: Upload agent-invoices backend artifact to repository
+      uses: actions/upload-artifact@v2
       with:
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        workflow: Run unit tests
+        name: agent-invoices:${{ steps.versioning.outputs.version }}
+        path: ./artifacts/backend/agent-invoices:${{ steps.versioning.outputs.version }}.exe
+    - name: Upload agent-reports backend artifact to repository
+      uses: actions/upload-artifact@v2
+      with:
+        name: agent-reports:${{ steps.versioning.outputs.version }}
+        path: ./artifacts/backend/agent-reports:${{ steps.versioning.outputs.version }}.exe
+    - name: Upload frontend artifact to repository
+      uses: actions/upload-artifact@v2
+      with: 
+        name: frontend:${{ steps.versioning.outputs.version }}
+        path: ./Frontend/build

@@ -1,6 +1,5 @@
 name: Analyze code with Sonar Cloud
 on:
-  workflow_dispatch:
   pull_request:
     branches:
         - main
