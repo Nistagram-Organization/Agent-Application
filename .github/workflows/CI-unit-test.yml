@@ -22,8 +22,8 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}
     - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      with:
+        fetch-depth: 0
     - name: Run agent-products unit tests
       working-directory: ./agent-products
       run: go test ./...

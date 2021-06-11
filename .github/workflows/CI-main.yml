@@ -25,7 +25,7 @@ jobs:
     - name: Build, upload to artifact repository and publish to DockerHub
       run: ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKERHUB_USERNAME }}
     - name: Emit repository_dispatch
-          uses: mvasigh/dispatch-action@main
-          with:
-            token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-            event_type: ci_main_pipeline_done
+      uses: mvasigh/dispatch-action@main
+      with:
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        event_type: ci_main_pipeline_done
