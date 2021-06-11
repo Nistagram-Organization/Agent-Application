@@ -65,20 +65,20 @@ jobs:
     - name: Upload agent-products backend artifact to repository
       uses: actions/upload-artifact@v2
       with:
-        name: agent-products:${{ steps.versioning.outputs.version }}
+        name: agent-products-${{ steps.versioning.outputs.version }}
         path: ./agent-products/agent-products:${{ steps.versioning.outputs.version }}.exe
     - name: Upload agent-invoices backend artifact to repository
       uses: actions/upload-artifact@v2
       with:
-        name: agent-invoices:${{ steps.versioning.outputs.version }}
+        name: agent-invoices-${{ steps.versioning.outputs.version }}
         path: ./agent-invoices/agent-invoices:${{ steps.versioning.outputs.version }}.exe
     - name: Upload agent-reports backend artifact to repository
       uses: actions/upload-artifact@v2
       with:
-        name: agent-reports:${{ steps.versioning.outputs.version }}
+        name: agent-reports-${{ steps.versioning.outputs.version }}
         path: ./agent-reports/agent-reports:${{ steps.versioning.outputs.version }}.exe
     - name: Upload frontend artifact to repository
       uses: actions/upload-artifact@v2
       with: 
-        name: frontend:${{ steps.versioning.outputs.version }}
+        name: frontend-${{ steps.versioning.outputs.version }}
         path: ./Frontend/build
