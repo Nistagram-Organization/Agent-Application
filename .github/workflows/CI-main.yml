@@ -26,8 +26,13 @@ jobs:
       run: |
         chmod 777 ./build-upload-publish.sh
         ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}
-    - name: Emit repository_dispatch
-      uses: mvasigh/dispatch-action@main
+    - name: Invoke code analysis
+      uses: benc-uk/workflow-dispatch@v1
       with:
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        event_type: ci_main_pipeline_done
+        workflow: Analyze code with Sonar Cloud
+    - name: Invoke unit tests
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        workflow: Run unit tests

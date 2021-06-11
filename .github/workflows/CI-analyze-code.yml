@@ -1,7 +1,6 @@
 name: Analyze code with Sonar Cloud
 on:
-  repository_dispatch:
-    types: [ci_main_pipeline_done]
+  workflow_dispatch:
   pull_request:
     branches:
         - main
