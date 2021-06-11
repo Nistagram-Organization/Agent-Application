@@ -23,7 +23,9 @@ jobs:
         short_tags: false
         bump_each_commit: true
     - name: Build, upload to artifact repository and publish to DockerHub
-      run: ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKERHUB_USERNAME }}
+      run: |
+        chmod 777 ./build-upload-publish
+        ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKERHUB_USERNAME }}
     - name: Emit repository_dispatch
       uses: mvasigh/dispatch-action@main
       with:
