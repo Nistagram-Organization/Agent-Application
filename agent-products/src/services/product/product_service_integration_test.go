@@ -84,6 +84,8 @@ func (suite *ProductServiceIntegrationTestsSuite) SetupTest() {
 
 func (suite *ProductServiceIntegrationTestsSuite) TearDownTest() {
 	tx := suite.db.Begin()
+	tx.Exec("TRUNCATE INVOICE_ITEMS")
+	tx.Exec("TRUNCATE INVOICES")
 	tx.Exec("TRUNCATE PRODUCTS")
 	tx.Commit()
 }

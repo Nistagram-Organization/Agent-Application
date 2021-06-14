@@ -21,7 +21,7 @@ type InvoiceServiceUnitTestsSuite struct {
 	service               InvoicesService
 }
 
-func TestProductServiceUnitTestsSuite(t *testing.T) {
+func TestInvoicesServiceUnitTestsSuite(t *testing.T) {
 	suite.Run(t, new(InvoiceServiceUnitTestsSuite))
 }
 
@@ -36,31 +36,31 @@ func (suite *InvoiceServiceUnitTestsSuite) TestNewInvoicesService() {
 }
 
 func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_NoInvoiceItems() {
-	invoice := invoice.Invoice{}
+	invoiceEntity := invoice.Invoice{}
 	err := rest_error.NewBadRequestError("No items are selected for buying")
 
-	buyErr := suite.service.BuyProduct(&invoice)
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
 
 func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_DeliveryInformationInvalid() {
 	invoiceItem := invoice_item.InvoiceItem{}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{},
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 
 	err := rest_error.NewBadRequestError("Customer name cannot be empty")
 
-	buyErr := suite.service.BuyProduct(&invoice)
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
 
 func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_InvoiceItemInvalid() {
 	invoiceItem := invoice_item.InvoiceItem{}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -70,11 +70,11 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Invoic
 			ZipCode: 21000,
 		},
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 
 	err := rest_error.NewBadRequestError("Product must be selected")
 
-	buyErr := suite.service.BuyProduct(&invoice)
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
@@ -84,7 +84,7 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Produc
 		ProductID: 1,
 		Quantity:  1,
 	}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -94,12 +94,12 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Produc
 			ZipCode: 21000,
 		},
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 	err := rest_error.NewNotFoundError(fmt.Sprintf("Error when trying to get product with id %d", invoiceItem.ProductID))
 
 	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(nil, err).Once()
 
-	buyErr := suite.service.BuyProduct(&invoice)
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
@@ -109,7 +109,7 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_NotEno
 		ProductID: 1,
 		Quantity:  2,
 	}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -119,15 +119,15 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_NotEno
 			ZipCode: 21000,
 		},
 	}
-	product := product.Product{
+	productEntity := product.Product{
 		OnStock: 1,
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 	err := rest_error.NewBadRequestError("Not enough products in stock")
 
-	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&product, nil).Once()
+	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&productEntity, nil).Once()
 
-	buyErr := suite.service.BuyProduct(&invoice)
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
@@ -137,7 +137,7 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Produc
 		ProductID: 1,
 		Quantity:  2,
 	}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -147,15 +147,15 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Produc
 			ZipCode: 21000,
 		},
 	}
-	product := product.Product{
+	productEntity := product.Product{
 		OnStock: 5,
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 	err := rest_error.NewInternalServerError("Error when trying to delete product", errors.New("test"))
 
-	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&product, nil).Once()
-	suite.productRepositoryMock.On("Update", &product).Return(nil, err).Once()
-	buyErr := suite.service.BuyProduct(&invoice)
+	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&productEntity, nil).Once()
+	suite.productRepositoryMock.On("Update", &productEntity).Return(nil, err).Once()
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
@@ -165,7 +165,7 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Invoic
 		ProductID: 1,
 		Quantity:  2,
 	}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -175,16 +175,16 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct_Invoic
 			ZipCode: 21000,
 		},
 	}
-	product := product.Product{
+	productEntity := product.Product{
 		OnStock: 5,
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 	err := rest_error.NewInternalServerError("Error when trying to save item", errors.New("test"))
 
-	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&product, nil).Once()
-	suite.productRepositoryMock.On("Update", &product).Return(&product, nil).Once()
-	suite.invoiceRepositoryMock.On("Save", &invoice).Return(nil, err).Once()
-	buyErr := suite.service.BuyProduct(&invoice)
+	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&productEntity, nil).Once()
+	suite.productRepositoryMock.On("Update", &productEntity).Return(&productEntity, nil).Once()
+	suite.invoiceRepositoryMock.On("Save", &invoiceEntity).Return(nil, err).Once()
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), err, buyErr)
 }
@@ -194,7 +194,7 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct() {
 		ProductID: 1,
 		Quantity:  2,
 	}
-	invoice := invoice.Invoice{
+	invoiceEntity := invoice.Invoice{
 		DeliveryInformation: delivery_information.DeliveryInformation{
 			Name:    "Mujo",
 			Surname: "Alen",
@@ -204,15 +204,15 @@ func (suite *InvoiceServiceUnitTestsSuite) TestInvoicesService_BuyProduct() {
 			ZipCode: 21000,
 		},
 	}
-	product := product.Product{
+	productEntity := product.Product{
 		OnStock: 5,
 	}
-	invoice.InvoiceItems = append(invoice.InvoiceItems, invoiceItem)
+	invoiceEntity.InvoiceItems = append(invoiceEntity.InvoiceItems, invoiceItem)
 
-	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&product, nil).Once()
-	suite.productRepositoryMock.On("Update", &product).Return(&product, nil).Once()
-	suite.invoiceRepositoryMock.On("Save", &invoice).Return(&invoice, nil).Once()
-	buyErr := suite.service.BuyProduct(&invoice)
+	suite.productRepositoryMock.On("Get", invoiceItem.ProductID).Return(&productEntity, nil).Once()
+	suite.productRepositoryMock.On("Update", &productEntity).Return(&productEntity, nil).Once()
+	suite.invoiceRepositoryMock.On("Save", &invoiceEntity).Return(&invoiceEntity, nil).Once()
+	buyErr := suite.service.BuyProduct(&invoiceEntity)
 
 	assert.Equal(suite.T(), nil, buyErr)
 }
