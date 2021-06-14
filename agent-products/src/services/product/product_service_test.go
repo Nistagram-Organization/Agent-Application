@@ -85,7 +85,7 @@ func (suite *ProductServiceUnitTestsSuite) TestProductsService_Get() {
 }
 
 func (suite *ProductServiceUnitTestsSuite) TestProductsService_GetAll() {
-	all_products := []model.Product{
+	allProducts := []model.Product{
 		{
 			ID:          2,
 			Name:        "p1",
@@ -105,8 +105,8 @@ func (suite *ProductServiceUnitTestsSuite) TestProductsService_GetAll() {
 	}
 	base64Img := "data:image/jpg;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
 
-	suite.productRepositoryMock.On("GetAll").Return(all_products).Once()
-	for _, product := range all_products {
+	suite.productRepositoryMock.On("GetAll").Return(allProducts).Once()
+	for _, product := range allProducts {
 		suite.imageUtilsServiceMock.On("LoadImage", product.Image).Return(base64Img, nil).Once()
 	}
 
@@ -116,11 +116,11 @@ func (suite *ProductServiceUnitTestsSuite) TestProductsService_GetAll() {
 	assert.NotEmpty(suite.T(), returned)
 	assert.Equal(suite.T(), 2, len(returned))
 	for i := 0; i < len(returned); i++ {
-		assert.Equal(suite.T(), all_products[i].ID, returned[i].ID)
-		assert.Equal(suite.T(), all_products[i].Name, returned[i].Name)
-		assert.Equal(suite.T(), all_products[i].Description, returned[i].Description)
-		assert.Equal(suite.T(), all_products[i].Price, returned[i].Price)
-		assert.Equal(suite.T(), all_products[i].OnStock, returned[i].OnStock)
+		assert.Equal(suite.T(), allProducts[i].ID, returned[i].ID)
+		assert.Equal(suite.T(), allProducts[i].Name, returned[i].Name)
+		assert.Equal(suite.T(), allProducts[i].Description, returned[i].Description)
+		assert.Equal(suite.T(), allProducts[i].Price, returned[i].Price)
+		assert.Equal(suite.T(), allProducts[i].OnStock, returned[i].OnStock)
 		assert.Equal(suite.T(), base64Img, returned[i].Image)
 	}
 }
