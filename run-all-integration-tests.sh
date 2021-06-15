@@ -3,7 +3,7 @@ docker-compose -f docker-compose.test.yml up -d
 
 is_finished() {
 	service_name="$1"
-	status="$(docker inspect "$service_name" --format='{{.State.Status}}')"
+	status="$(docker inspect -f "{{.State.Status}}" "$service_name")"
 
 	if [ "$status" = "exited" ]; then
 		return 0
