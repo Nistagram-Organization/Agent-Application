@@ -5,6 +5,8 @@ is_finished() {
 	service_name="$1"
 	status="$(docker inspect -f "{{.State.Status}}" "$service_name")"
 
+	echo "STATUS: $status, CONTAINER: $service_name"
+
 	if [ "$status" = "exited" ]; then
 		return 0
 	else
@@ -14,9 +16,11 @@ is_finished() {
 
 return_exit_code() {
 	service_name="$1"
-	status="$(docker inspect -f "{{.State.ExitCode}}" "$service_name")"
+	exit_code="$(docker inspect -f "{{.State.ExitCode}}" "$service_name")"
 	
-	if [ "$status" = 0 ]; then
+	echo "EXIT_CODE: $exit_code, CONTAINER: $service_name"
+
+	if [ "$exit_code" = 0 ]; then
 		return 0
 	else
 		return 1
