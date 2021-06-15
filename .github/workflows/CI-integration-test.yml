@@ -21,4 +21,5 @@ jobs:
     - name: Run script for integration tests
       run: |
         chmod 777 ./run-all-integration-tests.sh
-        exit ./run-all-integration-tests.sh
+        ./run-all-integration-tests.sh
+        exit
