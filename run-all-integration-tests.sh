@@ -22,4 +22,24 @@ while ! is_finished agent-products; do sleep 20; done
 while ! is_finished agent-reports; do sleep 20; done
 while ! is_finished agent-invoices; do sleep 20; done
 
-return [ [ return_exit_code agent-products ] || [ return_exit_code agent-invoices ] || [ return_exit_code agent-reports ] ]
+AGENT_PRODUCTS_TEST_EXIT_CODE=return_exit_code agent-products
+AGENT_REPORTS_TEST_EXIT_CODE=return_exit_code agent-reports
+AGENT_INVOICES_TEST_EXIT_CODE=return_exit_code agent-invoices
+
+echo 'agent-products tests returned $AGENT_PRODUCTS_TEST_EXIT_CODE'
+echo 'agent-reports tests returned $AGENT_REPORTS_TEST_EXIT_CODE'
+echo 'agent-invoices tests returned $AGENT_INVOICES_TEST_EXIT_CODE'
+
+if ["$AGENT_PRODUCTS_TEST_EXIT_CODE" == 1]; then
+	return 1
+fi
+
+if ["$AGENT_INVOICES_TEST_EXIT_CODE" == 1]; then
+	return 1
+fi
+
+if ["$AGENT_REPORTS_TEST_EXIT_CODE" == 1]; then
+	return 1
+fi
+
+return 0
