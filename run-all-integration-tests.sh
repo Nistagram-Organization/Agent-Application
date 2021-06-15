@@ -40,13 +40,15 @@ echo "agent-reports tests returned $AGENT_REPORTS_TEST_EXIT_CODE"
 echo "agent-invoices tests returned $AGENT_INVOICES_TEST_EXIT_CODE"
 
 if [ "$AGENT_PRODUCTS_TEST_EXIT_CODE" = 1 ]; then
-	exit 1
+	echo "::set-output name=tests_exit_code::$($AGENT_PRODUCTS_TEST_EXIT_CODE)\n"
 fi
 
 if [ "$AGENT_INVOICES_TEST_EXIT_CODE" = 1 ]; then
-	exit 1
+	echo "::set-output name=tests_exit_code::$($AGENT_INVOICES_TEST_EXIT_CODE)\n"
 fi
 
 if [ "$AGENT_REPORTS_TEST_EXIT_CODE" = 1 ]; then
-	exit 1
+	echo "::set-output name=tests_exit_code::$($AGENT_REPORTS_TEST_EXIT_CODE)\n"
 fi
+
+echo "::set-output name=tests_exit_code::0\n"

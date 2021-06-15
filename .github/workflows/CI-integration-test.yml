@@ -19,10 +19,10 @@ jobs:
       with:
         fetch-depth: 0
     - name: Run script for integration tests
-      id: tests
+      id: run_tests
       run: |
         chmod 777 ./run-all-integration-tests.sh
         ./run-all-integration-tests.sh
     - name: Check on failures
-      if: steps.tests.outcome != 'success'
+      if: steps.run_tests.outputs.tests_exit_code != 0
       run: exit 1
