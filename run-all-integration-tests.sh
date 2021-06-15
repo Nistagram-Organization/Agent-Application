@@ -15,7 +15,12 @@ is_finished() {
 return_exit_code() {
 	service_name="$1"
 	status="$(docker inspect -f "{{.State.ExitCode}}" "$service_name")"
-	return status
+	
+	if [ "$status" = 0 ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
 while ! is_finished agent-products; do sleep 20; done
@@ -30,14 +35,14 @@ echo "agent-products tests returned $AGENT_PRODUCTS_TEST_EXIT_CODE"
 echo "agent-reports tests returned $AGENT_REPORTS_TEST_EXIT_CODE"
 echo "agent-invoices tests returned $AGENT_INVOICES_TEST_EXIT_CODE"
 
-if [$AGENT_PRODUCTS_TEST_EXIT_CODE = 1] then
+if [ "$AGENT_PRODUCTS_TEST_EXIT_CODE" = 1 ]; then
 	exit 1
 fi
 
-if [$AGENT_INVOICES_TEST_EXIT_CODE = 1] then
+if [ "$AGENT_INVOICES_TEST_EXIT_CODE" = 1 ]; then
 	exit 1
 fi
 
-if [$AGENT_REPORTS_TEST_EXIT_CODE = 1] then
+if [ "$AGENT_REPORTS_TEST_EXIT_CODE" = 1 ]; then
 	exit 1
 fi
