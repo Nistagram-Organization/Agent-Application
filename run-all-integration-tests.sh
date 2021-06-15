@@ -2,8 +2,8 @@
 docker-compose -f docker-compose.test.yml up -d
 
 is_finished() {
-	service_name="$1"
-	status="$(docker inspect -f "{{.State.Status}}" "$service_name")"
+	local service_name="$1"
+	local status="$(docker inspect -f "{{.State.Status}}" "$service_name")"
 
 	echo "STATUS: $status, CONTAINER: $service_name"
 
@@ -15,8 +15,8 @@ is_finished() {
 }
 
 return_exit_code() {
-	service_name="$1"
-	exit_code="$(docker inspect -f "{{.State.ExitCode}}" "$service_name")"
+	local service_name="$1"
+	local exit_code="$(docker inspect -f "{{.State.ExitCode}}" "$service_name")"
 	
 	echo "EXIT_CODE: $exit_code, CONTAINER: $service_name"
 
