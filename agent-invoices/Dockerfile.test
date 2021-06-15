@@ -4,4 +4,4 @@ WORKDIR testdir
 
 COPY . .
 
-ENTRYPOINT ["./run-integration-tests.sh"]
+ENTRYPOINT ["sh", "./run-integration-tests.sh"]
