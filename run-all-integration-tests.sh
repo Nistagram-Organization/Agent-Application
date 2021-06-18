@@ -39,16 +39,16 @@ echo "agent-products tests returned $AGENT_PRODUCTS_TEST_EXIT_CODE"
 echo "agent-reports tests returned $AGENT_REPORTS_TEST_EXIT_CODE"
 echo "agent-invoices tests returned $AGENT_INVOICES_TEST_EXIT_CODE"
 
-if [ "$AGENT_PRODUCTS_TEST_EXIT_CODE" = 1 ]; then
-	echo "::set-output name=tests_exit_code::$($AGENT_PRODUCTS_TEST_EXIT_CODE)\n"
+if [ "$AGENT_PRODUCTS_TEST_EXIT_CODE" -eq 1 ]; then
+	echo "::set-output name=tests_exit_code::$($AGENT_PRODUCTS_TEST_EXIT_CODE)"
 fi
 
-if [ "$AGENT_INVOICES_TEST_EXIT_CODE" = 1 ]; then
-	echo "::set-output name=tests_exit_code::$($AGENT_INVOICES_TEST_EXIT_CODE)\n"
+if [ "$AGENT_INVOICES_TEST_EXIT_CODE" -eq 1 ]; then
+	echo "::set-output name=tests_exit_code::$($AGENT_INVOICES_TEST_EXIT_CODE)"
 fi
 
-if [ "$AGENT_REPORTS_TEST_EXIT_CODE" = 1 ]; then
-	echo "::set-output name=tests_exit_code::$($AGENT_REPORTS_TEST_EXIT_CODE)\n"
+if [ "$AGENT_REPORTS_TEST_EXIT_CODE" -eq 1 ]; then
+	echo "::set-output name=tests_exit_code::$($AGENT_REPORTS_TEST_EXIT_CODE)"
 fi
 
-echo "::set-output name=tests_exit_code::0\n"
+echo "::set-output name=tests_exit_code::0"
