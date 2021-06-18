@@ -44,9 +44,10 @@ func (suite *ProductReportsServiceIntegrationTestsSuite) SetupSuite() {
 
 func (suite *ProductReportsServiceIntegrationTestsSuite) TearDownTest() {
 	tx := suite.db.Begin()
-	tx.Exec("TRUNCATE INVOICE_ITEMS")
-	tx.Exec("TRUNCATE INVOICES")
-	tx.Exec("TRUNCATE PRODUCTS")
+	session := &gorm.Session{AllowGlobalUpdate: true}
+	tx.Session(session).Delete(&invoice_item.InvoiceItem{})
+	tx.Session(session).Delete(&invoice.Invoice{})
+	tx.Session(session).Delete(&product.Product{})
 	tx.Commit()
 }
 
