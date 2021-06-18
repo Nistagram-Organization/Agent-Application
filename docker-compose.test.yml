@@ -1,0 +1,96 @@
+version: '3.7'
+
+services:
+  agent-products-db:
+    container_name: agent-products-db
+    image: mysql:8.0.19
+    restart: always
+    ports:
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
+
+  agent-reports-db:
+    container_name: agent-reports-db
+    image: mysql:8.0.19
+    restart: always
+    ports:
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
+
+  agent-invoices-db:
+    container_name: agent-invoices-db
+    image: mysql:8.0.19
+    restart: always
+    ports:
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
+    
+  agent-products:
+    container_name: agent-products
+    image: agent-products:test
+    build:
+      dockerfile: Dockerfile.test
+      context: ./agent-products
+    depends_on:
+      agent-products-db:
+          condition: service_healthy
+    environment:
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-products-db:3306
+      - mysql_schema=agentapplicationschema
+
+  agent-reports:
+    container_name: agent-reports
+    image: agent-reports:test
+    build:
+      dockerfile: Dockerfile.test
+      context: ./agent-reports
+    depends_on:
+      agent-reports-db:
+          condition: service_healthy
+    environment:
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-reports-db:3306
+      - mysql_schema=agentapplicationschema
+
+  agent-invoices:
+    container_name: agent-invoices
+    image: agent-invoices:test
+    build:
+      dockerfile: Dockerfile.test
+      context: ./agent-invoices
+    depends_on:
+      agent-invoices-db:
+          condition: service_healthy
+    environment:
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-invoices-db:3306
+      - mysql_schema=agentapplicationschema
+  

@@ -9,52 +9,54 @@ import (
 	model "github.com/Nistagram-Organization/agent-shared/src/model/product"
 	"github.com/Nistagram-Organization/agent-shared/src/utils/rest_error"
 	"github.com/stretchr/testify/assert"
-	"os"
+	"github.com/stretchr/testify/suite"
 	"testing"
 )
 
-const (
-	temp = "/temp"
-)
-
-var (
+type ProductServiceUnitTestsSuite struct {
+	suite.Suite
 	productRepositoryMock      *repositories.ProductRepositoryMock
 	invoiceItemsRepositoryMock *repositories.InvoiceItemsRepositoryMock
 	imageUtilsServiceMock      *services.ImageUtilsServiceMock
+	temp                       string
 	service                    ProductService
-)
-
-func setup() {
-	productRepositoryMock = new(repositories.ProductRepositoryMock)
-	invoiceItemsRepositoryMock = new(repositories.InvoiceItemsRepositoryMock)
-	imageUtilsServiceMock = new(services.ImageUtilsServiceMock)
-	service = NewProductService(productRepositoryMock, invoiceItemsRepositoryMock, imageUtilsServiceMock, temp)
 }
 
-func TestMain(m *testing.M) {
-	setup()
-	code := m.Run()
-	os.Exit(code)
+func TestProductServiceUnitTestsSuite(t *testing.T) {
+	suite.Run(t, new(ProductServiceUnitTestsSuite))
 }
 
-func TestNewProductsService(t *testing.T) {
-	assert.NotNil(t, service, "Service is nil")
+func (suite *ProductServiceUnitTestsSuite) SetupSuite() {
+	suite.productRepositoryMock = new(repositories.ProductRepositoryMock)
+	suite.invoiceItemsRepositoryMock = new(repositories.InvoiceItemsRepositoryMock)
+	suite.imageUtilsServiceMock = new(services.ImageUtilsServiceMock)
+	suite.temp = "/temp"
+	suite.service = NewProductService(
+		suite.productRepositoryMock,
+		suite.invoiceItemsRepositoryMock,
+		suite.imageUtilsServiceMock,
+		suite.temp,
+	)
 }
 
-func TestProductsService_Get_ProductNotFound(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestNewProductsService() {
+	assert.NotNil(suite.T(), suite.service, "Service is nil")
+}
+
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Get_ProductNotFound() {
 	id := uint(3)
 	err := rest_error.NewNotFoundError(fmt.Sprintf("Error when trying to get product with id %d", id))
 
-	productRepositoryMock.On("Get", id).Return(nil, err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(nil, err).Once()
 
-	product, getErr := service.Get(id)
+	product, getErr := suite.service.Get(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, product)
-	assert.Equal(t, err, getErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), product)
+	assert.Equal(suite.T(), err, getErr)
 }
 
-func TestProductsService_Get(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Get() {
 	id := uint(3)
 	product := model.Product{
 		ID:          id,
@@ -66,24 +68,24 @@ func TestProductsService_Get(t *testing.T) {
 	}
 	base64Img := "data:image/jpg;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	imageUtilsServiceMock.On("LoadImage", product.Image).Return(base64Img, nil).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.imageUtilsServiceMock.On("LoadImage", product.Image).Return(base64Img, nil).Once()
 
-	returned, getErr := service.Get(id)
+	returned, getErr := suite.service.Get(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, getErr)
-	assert.NotNil(t, returned)
-	assert.Equal(t, product.ID, returned.ID)
-	assert.Equal(t, product.Name, returned.Name)
-	assert.Equal(t, product.Description, returned.Description)
-	assert.Equal(t, product.Price, returned.Price)
-	assert.Equal(t, product.OnStock, returned.OnStock)
-	assert.Equal(t, base64Img, returned.Image)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), getErr)
+	assert.NotNil(suite.T(), returned)
+	assert.Equal(suite.T(), product.ID, returned.ID)
+	assert.Equal(suite.T(), product.Name, returned.Name)
+	assert.Equal(suite.T(), product.Description, returned.Description)
+	assert.Equal(suite.T(), product.Price, returned.Price)
+	assert.Equal(suite.T(), product.OnStock, returned.OnStock)
+	assert.Equal(suite.T(), base64Img, returned.Image)
 }
 
-func TestProductsService_GetAll(t *testing.T) {
-	all_products := []model.Product{
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_GetAll() {
+	allProducts := []model.Product{
 		{
 			ID:          2,
 			Name:        "p1",
@@ -103,27 +105,27 @@ func TestProductsService_GetAll(t *testing.T) {
 	}
 	base64Img := "data:image/jpg;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
 
-	productRepositoryMock.On("GetAll").Return(all_products).Once()
-	for _, product := range all_products {
-		imageUtilsServiceMock.On("LoadImage", product.Image).Return(base64Img, nil).Once()
+	suite.productRepositoryMock.On("GetAll").Return(allProducts).Once()
+	for _, product := range allProducts {
+		suite.imageUtilsServiceMock.On("LoadImage", product.Image).Return(base64Img, nil).Once()
 	}
 
-	returned := service.GetAll()
+	returned := suite.service.GetAll()
 
-	assert.NotNil(t, returned)
-	assert.NotEmpty(t, returned)
-	assert.Equal(t, 2, len(returned))
+	assert.NotNil(suite.T(), returned)
+	assert.NotEmpty(suite.T(), returned)
+	assert.Equal(suite.T(), 2, len(returned))
 	for i := 0; i < len(returned); i++ {
-		assert.Equal(t, all_products[i].ID, returned[i].ID)
-		assert.Equal(t, all_products[i].Name, returned[i].Name)
-		assert.Equal(t, all_products[i].Description, returned[i].Description)
-		assert.Equal(t, all_products[i].Price, returned[i].Price)
-		assert.Equal(t, all_products[i].OnStock, returned[i].OnStock)
-		assert.Equal(t, base64Img, returned[i].Image)
+		assert.Equal(suite.T(), allProducts[i].ID, returned[i].ID)
+		assert.Equal(suite.T(), allProducts[i].Name, returned[i].Name)
+		assert.Equal(suite.T(), allProducts[i].Description, returned[i].Description)
+		assert.Equal(suite.T(), allProducts[i].Price, returned[i].Price)
+		assert.Equal(suite.T(), allProducts[i].OnStock, returned[i].OnStock)
+		assert.Equal(suite.T(), base64Img, returned[i].Image)
 	}
 }
 
-func TestProductsService_Create_ProductInvalid(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Create_ProductInvalid() {
 	product := model.Product{
 		Name:        "",
 		Description: "opis",
@@ -133,14 +135,14 @@ func TestProductsService_Create_ProductInvalid(t *testing.T) {
 	}
 	err := rest_error.NewBadRequestError("Product name cannot be empty")
 
-	returned, createErr := service.Create(&product)
+	returned, createErr := suite.service.Create(&product)
 
-	assert.Nil(t, returned)
-	assert.NotNil(t, createErr)
-	assert.Equal(t, err, createErr)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), createErr)
+	assert.Equal(suite.T(), err, createErr)
 }
 
-func TestProductsService_Create_ImageInvalid(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Create_ImageInvalid() {
 	product := model.Product{
 		Name:        "p1",
 		Description: "opis",
@@ -150,16 +152,16 @@ func TestProductsService_Create_ImageInvalid(t *testing.T) {
 	}
 	err := rest_error.NewBadRequestError("Error when decoding image")
 
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("", err).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("", err).Once()
 
-	returned, createErr := service.Create(&product)
+	returned, createErr := suite.service.Create(&product)
 
-	assert.Nil(t, returned)
-	assert.NotNil(t, createErr)
-	assert.Equal(t, err, createErr)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), createErr)
+	assert.Equal(suite.T(), err, createErr)
 }
 
-func TestProductsService_Create_RepositoryError(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Create_RepositoryError() {
 	product := model.Product{
 		Name:        "p1",
 		Description: "opis",
@@ -169,17 +171,17 @@ func TestProductsService_Create_RepositoryError(t *testing.T) {
 	}
 	err := rest_error.NewInternalServerError("Error when trying to create product", errors.New("test"))
 
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("temp/img.jpg", nil).Once()
-	productRepositoryMock.On("Create", &product).Return(nil, err).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("temp/img.jpg", nil).Once()
+	suite.productRepositoryMock.On("Create", &product).Return(nil, err).Once()
 
-	returned, createErr := service.Create(&product)
+	returned, createErr := suite.service.Create(&product)
 
-	assert.Nil(t, returned)
-	assert.NotNil(t, createErr)
-	assert.Equal(t, err, createErr)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), createErr)
+	assert.Equal(suite.T(), err, createErr)
 }
 
-func TestProductsService_Create(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Create() {
 	product := model.Product{
 		Name:        "p1",
 		Description: "opis",
@@ -196,81 +198,81 @@ func TestProductsService_Create(t *testing.T) {
 		Image:       "temp/img.jpg",
 	}
 
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("temp/img.jpg", nil).Once()
-	productRepositoryMock.On("Create", &product).Return(&expectedProduct, nil).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("temp/img.jpg", nil).Once()
+	suite.productRepositoryMock.On("Create", &product).Return(&expectedProduct, nil).Once()
 
-	returned, createErr := service.Create(&product)
+	returned, createErr := suite.service.Create(&product)
 
-	assert.Nil(t, createErr)
-	assert.NotNil(t, returned)
-	assert.Equal(t, expectedProduct.ID, returned.ID)
-	assert.Equal(t, expectedProduct.Name, returned.Name)
-	assert.Equal(t, expectedProduct.Description, returned.Description)
-	assert.Equal(t, expectedProduct.Price, returned.Price)
-	assert.Equal(t, expectedProduct.OnStock, returned.OnStock)
-	assert.Equal(t, expectedProduct.Image, returned.Image)
+	assert.Nil(suite.T(), createErr)
+	assert.NotNil(suite.T(), returned)
+	assert.Equal(suite.T(), expectedProduct.ID, returned.ID)
+	assert.Equal(suite.T(), expectedProduct.Name, returned.Name)
+	assert.Equal(suite.T(), expectedProduct.Description, returned.Description)
+	assert.Equal(suite.T(), expectedProduct.Price, returned.Price)
+	assert.Equal(suite.T(), expectedProduct.OnStock, returned.OnStock)
+	assert.Equal(suite.T(), expectedProduct.Image, returned.Image)
 }
 
-func TestProductsService_Delete_ProductNotFound(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Delete_ProductNotFound() {
 	id := uint(3)
 	err := rest_error.NewNotFoundError(fmt.Sprintf("Error when trying to get product with id %d", id))
 
-	productRepositoryMock.On("Get", id).Return(nil, err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(nil, err).Once()
 
-	getErr := service.Delete(id)
+	getErr := suite.service.Delete(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Equal(t, err, getErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Equal(suite.T(), err, getErr)
 }
 
-func TestProductsService_Delete_ProductCantBeDeleted(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Delete_ProductCantBeDeleted() {
 	id := uint(3)
 	err := rest_error.NewBadRequestError("Product can't be deleted because invoice for it exists")
 
-	productRepositoryMock.On("Get", id).Return(&model.Product{}, nil).Once()
-	invoiceItemsRepositoryMock.On("GetByProduct", id).Return(&invoice_item.InvoiceItem{}, nil).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&model.Product{}, nil).Once()
+	suite.invoiceItemsRepositoryMock.On("GetByProduct", id).Return(&invoice_item.InvoiceItem{}, nil).Once()
 
-	getItemErr := service.Delete(id)
+	getItemErr := suite.service.Delete(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	invoiceItemsRepositoryMock.AssertCalled(t, "GetByProduct", id)
-	assert.Equal(t, err, getItemErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	suite.invoiceItemsRepositoryMock.AssertCalled(suite.T(), "GetByProduct", id)
+	assert.Equal(suite.T(), err, getItemErr)
 }
 
-func TestProductsService_Delete_RepositoryError(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Delete_RepositoryError() {
 	id := uint(3)
 	product := model.Product{}
 	getErr := rest_error.NewNotFoundError("Error when trying to get invoice item by product")
 	err := rest_error.NewInternalServerError("Error when trying to delete product", errors.New("test"))
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	invoiceItemsRepositoryMock.On("GetByProduct", id).Return(nil, getErr).Once()
-	productRepositoryMock.On("Delete", &product).Return(err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.invoiceItemsRepositoryMock.On("GetByProduct", id).Return(nil, getErr).Once()
+	suite.productRepositoryMock.On("Delete", &product).Return(err).Once()
 
-	repErr := service.Delete(id)
+	repErr := suite.service.Delete(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	productRepositoryMock.AssertCalled(t, "Delete", &product)
-	assert.Equal(t, err, repErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Delete", &product)
+	assert.Equal(suite.T(), err, repErr)
 }
 
-func TestProductsService_Delete(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Delete() {
 	id := uint(3)
 	product := model.Product{}
 	getErr := rest_error.NewNotFoundError("Error when trying to get invoice item by product")
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	invoiceItemsRepositoryMock.On("GetByProduct", id).Return(nil, getErr).Once()
-	productRepositoryMock.On("Delete", &product).Return(nil).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.invoiceItemsRepositoryMock.On("GetByProduct", id).Return(nil, getErr).Once()
+	suite.productRepositoryMock.On("Delete", &product).Return(nil).Once()
 
-	result := service.Delete(id)
+	result := suite.service.Delete(id)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	productRepositoryMock.AssertCalled(t, "Delete", &product)
-	assert.Equal(t, nil, result)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Delete", &product)
+	assert.Equal(suite.T(), nil, result)
 }
 
-func TestProductsService_Edit_ProductInvalid(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Edit_ProductInvalid() {
 	product := model.Product{
 		Name:        "",
 		Description: "opis",
@@ -280,14 +282,14 @@ func TestProductsService_Edit_ProductInvalid(t *testing.T) {
 	}
 	err := rest_error.NewBadRequestError("Product name cannot be empty")
 
-	returned, editErr := service.Edit(&product)
+	returned, editErr := suite.service.Edit(&product)
 
-	assert.Nil(t, returned)
-	assert.NotNil(t, editErr)
-	assert.Equal(t, err, editErr)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), editErr)
+	assert.Equal(suite.T(), err, editErr)
 }
 
-func TestProductsService_Edit_ProductNotFound(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Edit_ProductNotFound() {
 	id := uint(3)
 	product := model.Product{
 		ID:          id,
@@ -299,17 +301,17 @@ func TestProductsService_Edit_ProductNotFound(t *testing.T) {
 	}
 	err := rest_error.NewNotFoundError(fmt.Sprintf("Error when trying to get product with id %d", id))
 
-	productRepositoryMock.On("Get", id).Return(nil, err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(nil, err).Once()
 
-	returned, editErr := service.Edit(&product)
+	returned, editErr := suite.service.Edit(&product)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, returned)
-	assert.NotNil(t, editErr)
-	assert.Equal(t, err, editErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), editErr)
+	assert.Equal(suite.T(), err, editErr)
 }
 
-func TestProductsService_Edit_ImageInvalid(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Edit_ImageInvalid() {
 	id := uint(3)
 	product := model.Product{
 		ID:          id,
@@ -321,18 +323,18 @@ func TestProductsService_Edit_ImageInvalid(t *testing.T) {
 	}
 	err := rest_error.NewBadRequestError("Error when decoding image")
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("", err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("", err).Once()
 
-	returned, editErr := service.Edit(&product)
+	returned, editErr := suite.service.Edit(&product)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, returned)
-	assert.NotNil(t, editErr)
-	assert.Equal(t, err, editErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), editErr)
+	assert.Equal(suite.T(), err, editErr)
 }
 
-func TestProductsService_Edit_RepositoryError(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Edit_RepositoryError() {
 	id := uint(3)
 	product := model.Product{
 		ID:          id,
@@ -344,19 +346,19 @@ func TestProductsService_Edit_RepositoryError(t *testing.T) {
 	}
 	err := rest_error.NewInternalServerError("Error when trying to update product", errors.New("test"))
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("temp/img.jpg", nil).Once()
-	productRepositoryMock.On("Update", &product).Return(nil, err).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("temp/img.jpg", nil).Once()
+	suite.productRepositoryMock.On("Update", &product).Return(nil, err).Once()
 
-	returned, editErr := service.Edit(&product)
+	returned, editErr := suite.service.Edit(&product)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, returned)
-	assert.NotNil(t, editErr)
-	assert.Equal(t, err, editErr)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), returned)
+	assert.NotNil(suite.T(), editErr)
+	assert.Equal(suite.T(), err, editErr)
 }
 
-func TestProductsService_Edit(t *testing.T) {
+func (suite *ProductServiceUnitTestsSuite) TestProductsService_Edit() {
 	id := uint(1)
 	product := model.Product{
 		ID:          id,
@@ -375,19 +377,19 @@ func TestProductsService_Edit(t *testing.T) {
 		Image:       "temp/img.jpg",
 	}
 
-	productRepositoryMock.On("Get", id).Return(&product, nil).Once()
-	imageUtilsServiceMock.On("SaveImage", product.Image, temp).Return("temp/img.jpg", nil).Once()
-	productRepositoryMock.On("Update", &product).Return(&expectedProduct, nil).Once()
+	suite.productRepositoryMock.On("Get", id).Return(&product, nil).Once()
+	suite.imageUtilsServiceMock.On("SaveImage", product.Image, suite.temp).Return("temp/img.jpg", nil).Once()
+	suite.productRepositoryMock.On("Update", &product).Return(&expectedProduct, nil).Once()
 
-	returned, editErr := service.Edit(&product)
+	returned, editErr := suite.service.Edit(&product)
 
-	productRepositoryMock.AssertCalled(t, "Get", id)
-	assert.Nil(t, editErr)
-	assert.NotNil(t, returned)
-	assert.Equal(t, expectedProduct.ID, returned.ID)
-	assert.Equal(t, expectedProduct.Name, returned.Name)
-	assert.Equal(t, expectedProduct.Description, returned.Description)
-	assert.Equal(t, expectedProduct.Price, returned.Price)
-	assert.Equal(t, expectedProduct.OnStock, returned.OnStock)
-	assert.Equal(t, expectedProduct.Image, returned.Image)
+	suite.productRepositoryMock.AssertCalled(suite.T(), "Get", id)
+	assert.Nil(suite.T(), editErr)
+	assert.NotNil(suite.T(), returned)
+	assert.Equal(suite.T(), expectedProduct.ID, returned.ID)
+	assert.Equal(suite.T(), expectedProduct.Name, returned.Name)
+	assert.Equal(suite.T(), expectedProduct.Description, returned.Description)
+	assert.Equal(suite.T(), expectedProduct.Price, returned.Price)
+	assert.Equal(suite.T(), expectedProduct.OnStock, returned.OnStock)
+	assert.Equal(suite.T(), expectedProduct.Image, returned.Image)
 }
