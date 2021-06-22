@@ -15,7 +15,7 @@ then
 else 
   echo "It's no there!"
   heroku create $TERRAFORM_PG_BACKEND
-  heroku addons:create heroku-postgresql:hobby-dev --app $TERRAFORM_PG_BACKEND
+  heroku addons:create jawsdb:kitefin --app $TERRAFORM_PG_BACKEND
 fi
 
 
