@@ -5,7 +5,19 @@ terraform {
 
 provider "heroku" {
 }
-  
+
+# Configure the MySQL provider
+provider "mysql" {
+  endpoint = "127.0.0.1:3306"
+  username = "root"
+  password = "root"
+}
+
+# Create a Database
+resource "mysql_database" "mysql_db" {
+  name = "mysql-database"
+}
+
 variable "agent-products-name" {
   description = "Unique name of the agent products app"
 }
@@ -32,11 +44,6 @@ resource "heroku_build" "agent-products" {
   }
 }
 
-resource "heroku_addon" "database_mysql_products" {
-  app  = heroku_app.agent-products.name
-  plan = "cleardb:ignite"
-}
-
 
 ## ---------- AGENT-INVOICES ----------- ##
 resource "heroku_app" "agent-invoices" {
@@ -53,10 +60,6 @@ resource "heroku_build" "agent-invoices" {
   }
 }
 
-resource "heroku_addon" "database_mysql_invoices" {
-  app  = heroku_app.agent-invoices.name
-  plan = "cleardb:ignite"
-}
 
 ## ---------- AGENT-REPORTS ----------- ##
 resource "heroku_app" "agent-reports" {
@@ -71,11 +74,6 @@ resource "heroku_build" "agent-reports" {
   source {
     path = "agent-reports"
   }
-}
-
-resource "heroku_addon" "database_mysql_reports" {
-  app  = heroku_app.agent-reports.name
-  plan = "cleardb:ignite"
 }
 
 
