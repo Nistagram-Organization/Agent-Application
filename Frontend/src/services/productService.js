@@ -12,18 +12,18 @@ const getProduct = async (id) => {
     return response.data
 }
 
-const createProduct = async (product) => {
-    const response = await axios.post(`${BASE_URL}/products`, product)
+const createProduct = async (product, token) => {
+    const response = await axios.post(`${BASE_URL}/products`, product, { headers: { Authorization: `Bearer ${token}` } })
     return response.data
 }
 
-const editProduct = async (product) => {
-    const response = await axios.put(`${BASE_URL}/products`, product)
+const editProduct = async (product, token) => {
+    const response = await axios.put(`${BASE_URL}/products`, product, { headers: { Authorization: `Bearer ${token}` } })
     return response.data
 }
 
-const deleteProduct = async (id) => {
-    const response = await axios.delete(`${BASE_URL}/products/${id}`)
+const deleteProduct = async (id, token) => {
+    const response = await axios.delete(`${BASE_URL}/products/${id}`, { headers: { Authorization: `Bearer ${token}` } })
     return response.data
 }
 

@@ -9,6 +9,7 @@ import (
 	"github.com/Nistagram-Organization/agent-shared/src/model/invoice"
 	"github.com/Nistagram-Organization/agent-shared/src/model/invoice_item"
 	"github.com/Nistagram-Organization/agent-shared/src/model/product"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/jwt_utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,10 @@ var (
 )
 
 func StartApplication() {
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+	router.Use(cors.New(corsConfig))
 
 	database := mysql.NewMySqlDatabaseClient()
 	if err := database.Init(); err != nil {
@@ -38,7 +42,7 @@ func StartApplication() {
 		service.NewProductReportService(product_report.NewProductReportRepository(database)),
 	)
 
-	router.GET("/reports", productReportController.GenerateReport)
+	router.GET("/reports", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:report"), productReportController.GenerateReport)
 
 	router.Run(":8082")
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { getProduct } from '../reducers/productReducer'
@@ -12,6 +12,7 @@ import productService from '../services/productService'
 import Spinner from './Spinner'
 import ProductModal from './ProductModal'
 import { toggleModal } from '../reducers/modalReducer'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const buyModalSchema = yup.object().shape({
     quantity: yup
@@ -24,6 +25,12 @@ const Product = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
+    const { getAccessTokenSilently } = useAuth0()
+    const { token, setToken } = useState(null)
+
+    useEffect(() => {
+        getAccessTokenSilently().then(t => setToken(t))
+    }, [])
 
     const openBuyModal = async (values) => {
         dispatch(setBuyOrder(product.id, values.quantity))
@@ -36,7 +43,7 @@ const Product = () => {
 
     const deleteProduct = async () => {
         try {
-            await productService.deleteProduct(product.id)
+            await productService.deleteProduct(product.id, token)
             dispatch(setNotification('Product deleted successfully', 'success', 3000))
             history.push('/dashboard/products')
         } catch (e) {
