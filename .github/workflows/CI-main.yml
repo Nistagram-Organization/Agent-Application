@@ -90,3 +90,12 @@ jobs:
       with: 
         name: frontend-${{ steps.versioning.outputs.version }}
         path: ./Frontend/build
+    - name: Emit repository_dispatch
+      uses: mvasigh/dispatch-action@main
+      with:
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        event_type: ci_main_done
+        message: |
+          {
+            "version": "${{ steps.tag_version.outputs.new_tag }}"
+          }
