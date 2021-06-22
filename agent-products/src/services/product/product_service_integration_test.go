@@ -25,7 +25,7 @@ type ProductServiceIntegrationTestsSuite struct {
 }
 
 func (suite *ProductServiceIntegrationTestsSuite) SetupSuite() {
-	database := mysql.NewPostgreSqlDatabaseClient()
+	database := postgre.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		suite.Fail("Failed to initialize database")
 	}
