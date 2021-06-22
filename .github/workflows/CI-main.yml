@@ -102,4 +102,5 @@ jobs:
     - name: Deploy to staging env on Heroku
       run: |
         cd deployment || exit
+        chmod 777 ./deploy.sh
         ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ github.event.client_payload.message.version }} pgb1
