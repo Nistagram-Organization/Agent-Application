@@ -5,9 +5,11 @@ import { Row, Col } from 'react-flexa'
 import ProductPreview from './ProductPreview'
 import CreateProduct from './CreateProduct'
 import ProductModal from './ProductModal'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const Products = () => {
     const dispatch = useDispatch()
+    const { isAuthenticated } = useAuth0()
 
     useEffect(() => {
         dispatch(getProducts())
@@ -28,9 +30,11 @@ const Products = () => {
                         </Col>
                     )
                 }
-                <Col>
-                    <CreateProduct toggleModal={toggleModal}/>
-                </Col>
+                {   isAuthenticated &&
+                    <Col>
+                        <CreateProduct toggleModal={toggleModal}/>
+                    </Col>
+                }
             </Row>
         </>
     )

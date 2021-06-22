@@ -11,6 +11,7 @@ import (
 	"github.com/Nistagram-Organization/agent-shared/src/model/invoice"
 	"github.com/Nistagram-Organization/agent-shared/src/model/invoice_item"
 	"github.com/Nistagram-Organization/agent-shared/src/model/product"
+	"github.com/Nistagram-Organization/agent-shared/src/utils/jwt_utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,10 @@ var (
 )
 
 func StartApplication() {
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+	router.Use(cors.New(corsConfig))
 
 	database := mysql.NewMySqlDatabaseClient()
 	if err := database.Init(); err != nil {
@@ -47,9 +51,9 @@ func StartApplication() {
 
 	router.GET("/products", productController.GetAll)
 	router.GET("/products/:id", productController.Get)
-	router.POST("/products", productController.Create)
-	router.PUT("/products", productController.Edit)
-	router.DELETE("/products/:id", productController.Delete)
+	router.POST("/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:product"), productController.Create)
+	router.PUT("/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("edit:report"), productController.Edit)
+	router.DELETE("/products/:id", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("delete:report"), productController.Delete)
 
 	router.Run(":8081")
 }
