@@ -27,7 +27,7 @@ func TestInvoicesServiceIntegrationTestsSuite(t *testing.T) {
 }
 
 func (suite *InvoiceServiceIntegrationTestsSuite) SetupSuite() {
-	database := mysql.NewMySqlDatabaseClient()
+	database := postgre.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		suite.Fail("Failed to initialize database")
 	}
