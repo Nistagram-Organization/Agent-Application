@@ -74,7 +74,7 @@ resource "heroku_build" "agent-reports" {
   }
 }
 
-resource "heroku_addon_attachment" "database" {
+resource "heroku_addon_attachment" "database1" {
   app_id  = heroku_app.agent-reports.id
   addon_id = heroku_addon.database.id
 }
