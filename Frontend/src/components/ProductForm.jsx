@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { Formik } from 'formik'
 import { Button, Col, Form, Row } from 'react-bootstrap'
@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom'
 import productService from '../services/productService'
 import { getProducts } from '../reducers/productReducer'
 import { toggleModal } from '../reducers/modalReducer'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const productSchema = yup.object().shape({
     name: yup
@@ -33,6 +34,12 @@ const ProductForm = () => {
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
     const action = useSelector(state => state.modals.action)
+    const { getAccessTokenSilently } = useAuth0()
+    const { token, setToken } = useState(null)
+
+    useEffect(() => {
+        getAccessTokenSilently().then(t => setToken(t))
+    }, [])
 
     const isCreateForm = () => {
         return action === '' || action === 'CREATE'
@@ -54,8 +61,8 @@ const ProductForm = () => {
         try {
             if (!isCreateForm())
                 productToProcess.id = product.id
-            isCreateForm() ? await productService.createProduct(productToProcess) :
-                await productService.editProduct(productToProcess)
+            isCreateForm() ? await productService.createProduct(productToProcess, token) :
+                await productService.editProduct(productToProcess, token)
             dispatch(setNotification(isCreateForm() ? 'Product created successfully' :
                 'Product edited successfully', 'success', 3000))
             isCreateForm() ? dispatch(getProducts()) : history.push('/dashboard/products')

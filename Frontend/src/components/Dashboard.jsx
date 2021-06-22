@@ -5,14 +5,15 @@ import { Redirect } from 'react-router-dom'
 import Products from './Products'
 import Product from './Product'
 import Reports from './Reports'
+import { useAuth0 } from '@auth0/auth0-react'
 
 
 const Dashboard = () => {
+    const { isAuthenticated } = useAuth0()
 
-    const authenticated = true
     const requireAuthentication = (to, from, next) => {
         if(to.meta.authenticated) {
-            if(authenticated) {
+            if(isAuthenticated) {
                 next()
             }
             next.redirect(from)
@@ -22,7 +23,7 @@ const Dashboard = () => {
 
     return (
         <div>
-            <Navbar authenticated={authenticated}/>
+            <Navbar/>
             <div style={{ marginTop: '2%' }}>
                 <GuardProvider guards={[requireAuthentication]}>
                     <GuardedRoute path='/dashboard/products/:id'>
