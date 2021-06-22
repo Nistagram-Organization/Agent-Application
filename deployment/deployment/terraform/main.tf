@@ -34,7 +34,7 @@ resource "heroku_build" "agent-products" {
 
 resource "heroku_addon" "database" {
   app = heroku_app.agent-products.name
-  plan = "jawsdb:kitefin"
+  plan = "heroku-postgresql:hobby-dev"
 }
 
 

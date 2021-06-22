@@ -15,12 +15,12 @@ then
 else 
   echo "It's no there!"
   heroku create $TERRAFORM_PG_BACKEND
-  heroku addons:create jawsdb:kitefin --app $TERRAFORM_PG_BACKEND
+  heroku addons:create heroku-postgresql:hobby-dev --app $TERRAFORM_PG_BACKEND
 fi
 
 
 cd terraform || exit
-JAWSDB_URL=$(heroku config:get JAWSDB_URL --app "$TERRAFORM_PG_BACKEND") && export JAWSDB_URL
+DATABASE_URL=$(heroku config:get DATABASE_URL --app "$TERRAFORM_PG_BACKEND") && export DATABASE_URL
 
 
 # prepare Dockerfile-s
@@ -39,7 +39,7 @@ cat ./agent-invoices/Dockerfile
 echo "FROM $APP_IMAGE_NAME_AGENT_REPORTS" >> ./agent-reports/Dockerfile
 cat ./agent-reports/Dockerfile
 
-terraform init -backend-config="conn_str=$JAWSDB_URL"
+terraform init -backend-config="conn_str=$DATABASE_URL"
 
 echo "Connected to database"
 

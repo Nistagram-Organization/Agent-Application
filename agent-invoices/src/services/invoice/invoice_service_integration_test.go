@@ -2,7 +2,7 @@ package invoice
 
 import (
 	"fmt"
-	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/mysql"
+	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/postgre"
 	invoices "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/invoice"
 	productRepository "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/product"
 	"github.com/Nistagram-Organization/agent-shared/src/model/delivery_information"

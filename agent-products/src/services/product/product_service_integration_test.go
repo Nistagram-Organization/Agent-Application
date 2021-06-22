@@ -2,7 +2,7 @@ package product
 
 import (
 	"fmt"
-	"github.com/Nistagram-Organization/Agent-Application/agent-products/src/datasources/mysql"
+	"github.com/Nistagram-Organization/Agent-Application/agent-products/src/datasources/postgre"
 	invoice_item2 "github.com/Nistagram-Organization/Agent-Application/agent-products/src/repositories/invoice_item"
 	product3 "github.com/Nistagram-Organization/Agent-Application/agent-products/src/repositories/product"
 	"github.com/Nistagram-Organization/Agent-Application/agent-products/src/utils/image_utils"
@@ -25,7 +25,7 @@ type ProductServiceIntegrationTestsSuite struct {
 }
 
 func (suite *ProductServiceIntegrationTestsSuite) SetupSuite() {
-	database := mysql.NewMySqlDatabaseClient()
+	database := mysql.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		suite.Fail("Failed to initialize database")
 	}

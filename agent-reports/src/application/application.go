@@ -2,7 +2,7 @@ package application
 
 import (
 	controller "github.com/Nistagram-Organization/Agent-Application/agent-reports/src/controllers/product_report"
-	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/datasources/mysql"
+	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/datasources/postgre"
 	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/repositories/product_report"
 	service "github.com/Nistagram-Organization/Agent-Application/agent-reports/src/services/product_report"
 	"github.com/Nistagram-Organization/agent-shared/src/model/delivery_information"
@@ -24,7 +24,7 @@ func StartApplication() {
 	corsConfig.AddAllowHeaders("Authorization")
 	router.Use(cors.New(corsConfig))
 
-	database := mysql.NewMySqlDatabaseClient()
+	database := postgre.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		panic(err)
 	}

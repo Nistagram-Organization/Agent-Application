@@ -1,7 +1,7 @@
 package product_report
 
 import (
-	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/datasources/mysql"
+	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/datasources/postgre"
 	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/repositories/product_report"
 	"github.com/Nistagram-Organization/agent-shared/src/model/delivery_information"
 	"github.com/Nistagram-Organization/agent-shared/src/model/invoice"
@@ -24,7 +24,7 @@ func TestProductReportsServiceIntegrationTestsSuite(t *testing.T) {
 }
 
 func (suite *ProductReportsServiceIntegrationTestsSuite) SetupSuite() {
-	database := mysql.NewMySqlDatabaseClient()
+	database := postgre.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		suite.Fail("Failed to initialize database")
 	}
