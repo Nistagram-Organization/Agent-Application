@@ -30,11 +30,11 @@ jobs:
         format: "${major}.${minor}.${patch}"
         short_tags: false
         bump_each_commit: true
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #- name: SonarCloud Scan
+    #  uses: SonarSource/sonarcloud-github-action@master
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     #- name: Run agent-products unit tests
     #  working-directory: ./agent-products
     #  run: go test -v -run=.+UnitTestsSuite ./...
@@ -90,17 +90,17 @@ jobs:
     #  with: 
     #    name: frontend-${{ steps.versioning.outputs.version }}
     #    path: ./Frontend/build
-    - name: Emit repository_dispatch
-      uses: mvasigh/dispatch-action@main
-      with:
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        event_type: ci_main_done
-        message: |
-          {
-            "version": "${{ steps.tag_version.outputs.new_tag }}"
-          }
+    #- name: Emit repository_dispatch
+    #  uses: mvasigh/dispatch-action@main
+    #  with:
+    #    token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    #    event_type: ci_main_done
+    #    message: |
+    #      {
+    #        "version": "${{ steps.tag_version.outputs.new_tag }}"
+    #      }
     - name: Deploy to staging env on Heroku
       run: |
         cd deployment || exit
         chmod 777 ./deploy.sh
-        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ github.event.client_payload.message.version }} pgb1
+        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ steps.versioning.outputs.version }} pgb1
