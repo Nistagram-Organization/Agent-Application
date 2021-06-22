@@ -5,7 +5,7 @@ terraform {
 
 provider "heroku" {
 }
-
+  
 variable "agent-products-name" {
   description = "Unique name of the agent products app"
 }
@@ -32,9 +32,9 @@ resource "heroku_build" "agent-products" {
   }
 }
 
-resource "heroku_addon" "database" {
+resource "heroku_addon" "database_mysql_products" {
   app  = heroku_app.agent-products.name
-  plan = "heroku-postgresql:hobby-dev"
+  plan = "cleardb:ignite"
 }
 
 
@@ -53,11 +53,10 @@ resource "heroku_build" "agent-invoices" {
   }
 }
 
-resource "heroku_addon_attachment" "database" {
-  app_id  = heroku_app.agent-invoices.id
-  addon_id = heroku_addon.database.id
+resource "heroku_addon" "database_mysql_invoices" {
+  app  = heroku_app.agent-invoices.name
+  plan = "cleardb:ignite"
 }
-
 
 ## ---------- AGENT-REPORTS ----------- ##
 resource "heroku_app" "agent-reports" {
@@ -74,9 +73,9 @@ resource "heroku_build" "agent-reports" {
   }
 }
 
-resource "heroku_addon_attachment" "database1" {
-  app_id  = heroku_app.agent-reports.id
-  addon_id = heroku_addon.database.id
+resource "heroku_addon" "database_mysql_reports" {
+  app  = heroku_app.agent-reports.name
+  plan = "cleardb:ignite"
 }
 
 
