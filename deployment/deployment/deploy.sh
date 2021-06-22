@@ -20,7 +20,7 @@ fi
 
 
 cd terraform || exit
-DATABASE_URL=$(heroku config:get DATABASE_URL --app "$TERRAFORM_PG_BACKEND") && export DATABASE_URL
+JAWSDB_URL=$(heroku config:get JAWSDB_URL --app "$TERRAFORM_PG_BACKEND") && export JAWSDB_URL
 
 
 # prepare Dockerfile-s
@@ -39,7 +39,7 @@ cat ./agent-invoices/Dockerfile
 echo "FROM $APP_IMAGE_NAME_AGENT_REPORTS" >> ./agent-reports/Dockerfile
 cat ./agent-reports/Dockerfile
 
-terraform init -backend-config="conn_str=$DATABASE_URL"
+terraform init -backend-config="conn_str=$JAWSDB_URL"
 
 echo "Connected to database"
 

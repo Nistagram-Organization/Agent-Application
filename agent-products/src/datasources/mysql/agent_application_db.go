@@ -24,20 +24,25 @@ func NewMySqlDatabaseClient() datasources.DatabaseClient {
 }
 
 func (c *mysqlClient) Init() error {
-	username := os.Getenv(mysqlUsername)
-	password := os.Getenv(mysqlPassword)
-	host := os.Getenv(mysqlHost)
-	schema := os.Getenv(mysqlSchema)
+	var dataSourceName string
+	var exists bool
 
-	dataSourceName := fmt.Sprintf(
-		"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		username,
-		password,
-		host,
-		schema,
-	)
+	if dataSourceName, exists = os.LookupEnv("JAWSDB_URL"); !exists {
+		username := os.Getenv(mysqlUsername)
+		password := os.Getenv(mysqlPassword)
+		host := os.Getenv(mysqlHost)
+		schema := os.Getenv(mysqlSchema)
 
+		dataSourceName = fmt.Sprintf(
+			"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			username,
+			password,
+			host,
+			schema,
+		)
+	}
 	client, err := gorm.Open(mysql.Open(dataSourceName), &gorm.Config{})
+
 	if err != nil {
 		return err
 	}

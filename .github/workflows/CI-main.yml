@@ -52,10 +52,10 @@ jobs:
     #- name: Check on failures
     #  if: steps.run_tests.outputs.tests_exit_code != 0
     #  run: exit 1
-    #- name: Build image and publish to DockerHub
-    #  run: |
-    #    chmod 777 ./build-upload-publish.sh
-    #    ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}
+    - name: Build image and publish to DockerHub
+      run: |
+        chmod 777 ./build-upload-publish.sh
+        ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}
     #- name: Build agent-products artifact
     #  working-directory: ./agent-products
     #  run: go build -o ./agent-products-${{ steps.versioning.outputs.version }}.exe ./src/main.go
@@ -103,4 +103,4 @@ jobs:
       run: |
         cd deployment || exit
         chmod 777 ./deploy.sh
-        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} 1.0.6 pgb1389
+        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ steps.versioning.outputs.version }} pgb1389
