@@ -6,18 +6,6 @@ terraform {
 provider "heroku" {
 }
 
-# Configure the MySQL provider
-provider "mysql" {
-  endpoint = "127.0.0.1:3306"
-  username = "root"
-  password = "root"
-}
-
-# Create a Database
-resource "mysql_database" "mysql_db" {
-  name = "mysql-database"
-}
-
 variable "agent-products-name" {
   description = "Unique name of the agent products app"
 }
@@ -44,6 +32,11 @@ resource "heroku_build" "agent-products" {
   }
 }
 
+resource "heroku_addon" "database" {
+  app = heroku_app.agent-products.name
+  plan = "jawsdb:kitefin"
+}
+
 
 ## ---------- AGENT-INVOICES ----------- ##
 resource "heroku_app" "agent-invoices" {
@@ -60,6 +53,12 @@ resource "heroku_build" "agent-invoices" {
   }
 }
 
+resource "heroku_addon_attachment" "database" {
+  app_id  = heroku_app.agent-invoices.id
+  addon_id = heroku_addon.database.id
+}
+
+
 
 ## ---------- AGENT-REPORTS ----------- ##
 resource "heroku_app" "agent-reports" {
@@ -75,6 +74,12 @@ resource "heroku_build" "agent-reports" {
     path = "agent-reports"
   }
 }
+
+resource "heroku_addon_attachment" "database1" {
+  app_id  = heroku_app.agent-reports.id
+  addon_id = heroku_addon.database.id
+}
+
 
 
 ## ---------- OUTPUTS ----------- ##
