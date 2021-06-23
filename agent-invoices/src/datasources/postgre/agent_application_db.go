@@ -1,7 +1,6 @@
 package postgre
 
 import (
-	"fmt"
 	"github.com/Nistagram-Organization/agent-shared/src/datasources"
 	"github.com/lib/pq"
 	"gorm.io/driver/postgres"
@@ -10,7 +9,8 @@ import (
 )
 
 const (
-	dsn = "DATABASE_URL"
+	dsn    = "DATABASE_URL"
+	heroku = "HEROKU"
 )
 
 type postgreSQLClient struct {
@@ -23,10 +23,12 @@ func NewPostgreSqlDatabaseClient() datasources.DatabaseClient {
 
 func (c *postgreSQLClient) Init() error {
 	dataSourceName := os.Getenv(dsn)
-	dataSourceName, _ = pq.ParseURL(dataSourceName)
-	dataSourceName += " sslmode=require"
 
-	fmt.Println(dataSourceName)
+	if os.Getenv(heroku) == "true" {
+		dataSourceName, _ = pq.ParseURL(dataSourceName)
+		dataSourceName = dataSourceName + " sslmode=require"
+	}
+
 	client, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: dataSourceName,
 	}), &gorm.Config{})

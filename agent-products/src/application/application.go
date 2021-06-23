@@ -51,11 +51,11 @@ func StartApplication() {
 		),
 	)
 
-	router.GET("/products", productController.GetAll)
-	router.GET("/products/:id", productController.Get)
-	router.POST("/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:product"), productController.Create)
-	router.PUT("/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("edit:report"), productController.Edit)
-	router.DELETE("/products/:id", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("delete:report"), productController.Delete)
+	router.GET("/api/products", productController.GetAll)
+	router.GET("/api/products/:id", productController.Get)
+	router.POST("/api/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:product"), productController.Create)
+	router.PUT("/api/products", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("edit:report"), productController.Edit)
+	router.DELETE("/api/products/:id", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("delete:report"), productController.Delete)
 
 	if port, exists := os.LookupEnv("PORT"); exists {
 		router.Run(fmt.Sprintf(":%s", port))
