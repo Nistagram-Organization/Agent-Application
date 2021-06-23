@@ -46,5 +46,5 @@ terraform init -backend-config="conn_str=$DATABASE_URL"
 echo "Connected to database"
 
 terraform apply -auto-approve -var agent-products-name="$APP_NAME_AGENT_PRODUCTS" \
-                              -var agent-invoices-name="$APP_NAME_AGENT_INVOICES"   \
+                              -var agent-invoices-name="$APP_NAME_AGENT_INVOICES" \
                               -var agent-reports-name="$APP_NAME_AGENT_REPORTS"

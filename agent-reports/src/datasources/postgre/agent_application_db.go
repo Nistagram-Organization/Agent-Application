@@ -3,13 +3,14 @@ package postgre
 import (
 	"fmt"
 	"github.com/Nistagram-Organization/agent-shared/src/datasources"
+	"github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
 )
 
 const (
-	dsn = "dsn"
+	dsn = "DATABASE_URL"
 )
 
 type postgreSQLClient struct {
@@ -21,18 +22,14 @@ func NewPostgreSqlDatabaseClient() datasources.DatabaseClient {
 }
 
 func (c *postgreSQLClient) Init() error {
-	var dataSourceName string
-	var exists bool
-
-	if dataSourceName, exists = os.LookupEnv("DATABASE_URL"); !exists {
-		dataSourceName = os.Getenv(dsn)
-	}
+	dataSourceName := os.Getenv(dsn)
+	dataSourceName, _ = pq.ParseURL(dataSourceName)
+	dataSourceName += " sslmode=require"
 
 	fmt.Println(dataSourceName)
 	client, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: dataSourceName,
 	}), &gorm.Config{})
-
 
 	if err != nil {
 		return err

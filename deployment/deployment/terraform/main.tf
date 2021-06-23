@@ -16,12 +16,6 @@ variable "agent-reports-name" {
   description = "Unique name of the agent reports app"
 }
 
-
-resource "heroku_addon" "database" {
-  app = heroku_app.agent-products.name
-  plan = "heroku-postgresql:hobby-dev"
-}
-
 ## ---------- AGENT-PRODUCTS ----------- ##
 resource "heroku_app" "agent-products" {
   name   = var.agent-products-name
@@ -37,9 +31,9 @@ resource "heroku_build" "agent-products" {
   }
 }
 
-resource "heroku_addon_attachment" "db1" {
-  app_id  = heroku_app.agent-products.id
-  addon_id = heroku_addon.database.id
+resource "heroku_addon" "database" {
+  app = heroku_app.agent-products.name
+  plan = "heroku-postgresql:hobby-dev"
 }
 
 
