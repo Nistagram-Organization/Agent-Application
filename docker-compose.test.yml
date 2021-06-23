@@ -70,6 +70,7 @@ services:
           condition: service_healthy
     environment:
       DATABASE_URL: "host=agent-products-db user=root password=root dbname=agentapplicationschema port=5432"
+      HEROKU: "false"
 
   agent-reports:
     container_name: agent-reports
@@ -82,6 +83,7 @@ services:
           condition: service_healthy
     environment:
       DATABASE_URL: "host=agent-reports-db user=root password=root dbname=agentapplicationschema port=5432"
+      HEROKU: "false"
 
   agent-invoices:
     container_name: agent-invoices
@@ -94,4 +96,5 @@ services:
           condition: service_healthy
     environment:
       DATABASE_URL: "host=agent-invoices-db user=root password=root dbname=agentapplicationschema port=5432"
+      HEROKU: "false"
   
