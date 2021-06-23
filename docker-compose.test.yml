@@ -1,12 +1,8 @@
 version: '3.7'
 
-volumes:
-  database-data:
-    name: server-database
-
 services:
-  agent-products-db:
-    container_name: agent-products-db
+  agent_products_db:
+    container_name: agent_products_db
     image: postgres:latest
     restart: always
     ports:
@@ -20,11 +16,9 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=agentapplicationschema
-    volumes:
-        - database-data:/var/lib/postgresql/data
 
-  agent-reports-db:
-    container_name: agent-reports-db
+  agent_reports_db:
+    container_name: agent_reports_db
     image: postgres:latest
     restart: always
     ports:
@@ -39,10 +33,10 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=agentapplicationschema
     volumes:
-        - database-data:/var/lib/postgresql/data
+        - database-data-reports:/var/lib/postgresql/data
 
-  agent-invoices-db:
-    container_name: agent-invoices-db
+  agent_invoices_db:
+    container_name: agent_invoices_db
     image: postgres:latest
     restart: always
     ports:
@@ -57,7 +51,7 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=agentapplicationschema
     volumes:
-        - database-data:/var/lib/postgresql/data
+        - database-data-invoices:/var/lib/postgresql/data
     
   agent-products:
     container_name: agent-products
@@ -66,10 +60,10 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-products
     depends_on:
-      agent-products-db:
+      agent_products_db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent-products-db user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=agent_products_db user=root password=root dbname=agentapplicationschema port=5432"
       HEROKU: "false"
 
   agent-reports:
@@ -79,10 +73,10 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-reports
     depends_on:
-      agent-reports-db:
+      agent_reports_db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent-reports-db user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=agent_reports_db user=root password=root dbname=agentapplicationschema port=5432"
       HEROKU: "false"
 
   agent-invoices:
@@ -92,9 +86,9 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-invoices
     depends_on:
-      agent-invoices-db:
+      agent_invoices_db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent-invoices-db user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=agent_invoices_db user=root password=root dbname=agentapplicationschema port=5432"
       HEROKU: "false"
   

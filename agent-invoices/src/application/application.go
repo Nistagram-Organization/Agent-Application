@@ -47,7 +47,7 @@ func StartApplication() {
 		),
 	)
 
-	router.POST("/api/invoices", invoicesController.BuyProduct)
+	router.POST("/invoices", invoicesController.BuyProduct)
 
 	if port, exists := os.LookupEnv("PORT"); exists {
 		router.Run(fmt.Sprintf(":%s", port))

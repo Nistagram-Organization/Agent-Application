@@ -44,7 +44,7 @@ func StartApplication() {
 		service.NewProductReportService(product_report.NewProductReportRepository(database)),
 	)
 
-	router.GET("/api/reports", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:report"), productReportController.GenerateReport)
+	router.GET("/reports", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:report"), productReportController.GenerateReport)
 
 	if port, exists := os.LookupEnv("PORT"); exists {
 		router.Run(fmt.Sprintf(":%s", port))
