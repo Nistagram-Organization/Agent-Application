@@ -1,0 +1,19 @@
+name: CD-develop
+
+on:
+  workflow_dispatch:
+    
+  repository_dispatch:
+    types: [ci_main_done]
+  
+jobs:
+    cd_job:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            ref: develop
+        - name: Deploy to staging env on Heroku
+          run: |
+            cd deployment || exit
+            ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ github.event.client_payload.message.version }} pgb1

@@ -48,7 +48,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=agentapplicationschema
-    
+
   agent-products:
     container_name: agent-products
     image: agent-products:test
@@ -93,4 +93,3 @@ services:
       - mysql_password=root
       - mysql_host=agent-invoices-db:3306
       - mysql_schema=agentapplicationschema
-  
