@@ -30,76 +30,68 @@ jobs:
         format: "${major}.${minor}.${patch}"
         short_tags: false
         bump_each_commit: true
-    #- name: SonarCloud Scan
+    # - name: SonarCloud Scan
     #  uses: SonarSource/sonarcloud-github-action@master
     #  env:
     #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #- name: Run agent-products unit tests
+    # - name: Run agent-products unit tests
     #  working-directory: ./agent-products
     #  run: go test -v -run=.+UnitTestsSuite ./...
-    #- name: Run agent-reports unit tests
+    # - name: Run agent-reports unit tests
     #  working-directory: ./agent-reports
     #  run: go test -v -run=.+UnitTestsSuite ./...
-    #- name: Run agent-invoices unit tests
+    # - name: Run agent-invoices unit tests
     #  working-directory: ./agent-invoices
     #  run: go test -v -run=.+UnitTestsSuite ./...
-    #- name: Run script for integration tests
+    # - name: Run script for integration tests
     #  id: run_tests
     #  run: |
     #    chmod 777 ./run-all-integration-tests.sh
     #    ./run-all-integration-tests.sh
-    #- name: Check on failures
+    # - name: Check on failures
     #  if: steps.run_tests.outputs.tests_exit_code != 0
     #  run: exit 1
     - name: Build image and publish to DockerHub
       run: |
         chmod 777 ./build-upload-publish.sh
         ./build-upload-publish.sh ${{ steps.versioning.outputs.version }} ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}
-    #- name: Build agent-products artifact
+    # - name: Build agent-products artifact
     #  working-directory: ./agent-products
     #  run: go build -o ./agent-products-${{ steps.versioning.outputs.version }}.exe ./src/main.go
-    #- name: Build agent-invoices artifact
+    # - name: Build agent-invoices artifact
     #  working-directory: ./agent-invoices
     #  run: go build -o ./agent-invoices-${{ steps.versioning.outputs.version }}.exe ./src/main.go
-    #- name: Build agent-reports artifact
+    # - name: Build agent-reports artifact
     #  working-directory: ./agent-reports
     #  run: go build -o ./agent-reports-${{ steps.versioning.outputs.version }}.exe ./src/main.go
-    #- name: Build frontend artifact
+    # - name: Build frontend artifact
     #  working-directory: ./Frontend
     #  run: |
     #    npm ci
     #    CI=false npm run build --if-present
-    #- name: Upload agent-products backend artifact to repository
+    # - name: Upload agent-products backend artifact to repository
     #  uses: actions/upload-artifact@v2
     #  with:
     #    name: agent-products-${{ steps.versioning.outputs.version }}
     #    path: ./agent-products/agent-products-${{ steps.versioning.outputs.version }}.exe
-    #- name: Upload agent-invoices backend artifact to repository
+    # - name: Upload agent-invoices backend artifact to repository
     #  uses: actions/upload-artifact@v2
     #  with:
     #    name: agent-invoices-${{ steps.versioning.outputs.version }}
     #    path: ./agent-invoices/agent-invoices-${{ steps.versioning.outputs.version }}.exe
-    #- name: Upload agent-reports backend artifact to repository
+    # - name: Upload agent-reports backend artifact to repository
     #  uses: actions/upload-artifact@v2
     #  with:
     #    name: agent-reports-${{ steps.versioning.outputs.version }}
     #    path: ./agent-reports/agent-reports-${{ steps.versioning.outputs.version }}.exe
-    #- name: Upload frontend artifact to repository
+    # - name: Upload frontend artifact to repository
     #  uses: actions/upload-artifact@v2
     #  with: 
     #    name: frontend-${{ steps.versioning.outputs.version }}
     #    path: ./Frontend/build
-    #- name: Emit repository_dispatch
-    #  uses: mvasigh/dispatch-action@main
-    #  with:
-    #    token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-    #    event_type: ci_main_done
-    #    message: |
-    #      {
-    #        "version": "${{ steps.tag_version.outputs.new_tag }}"
-    #      }
     - name: Deploy to staging env on Heroku
+      if: ${{ github.base_ref == 'development' }}
       run: |
         cd deployment || exit
         chmod 777 ./deploy.sh
