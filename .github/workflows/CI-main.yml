@@ -103,4 +103,4 @@ jobs:
       run: |
         cd deployment || exit
         chmod 777 ./deploy.sh
-        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} latest pgb1389
+        ./deploy.sh master.daca09@gmail.com ${{secrets.HEROKU_STAGING_TOKEN}} ${{ steps.versioning.outputs.version }} pgb1389
