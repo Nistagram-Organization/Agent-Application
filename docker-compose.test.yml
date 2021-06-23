@@ -1,5 +1,9 @@
 version: '3.7'
 
+volumes:
+  database-data:
+    name: server-database
+
 services:
   agent-products-db:
     container_name: agent-products-db
