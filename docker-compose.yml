@@ -34,7 +34,7 @@ services:
         condition: service_healthy
     restart: on-failure
     environment:
-      dsn: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
 
   agent-reports:
    container_name: agent-reports
@@ -47,7 +47,7 @@ services:
         condition: service_healthy
    restart: on-failure
    environment:
-      dsn: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
 
   agent-invoices:
     container_name: agent-invoices
@@ -60,7 +60,7 @@ services:
         condition: service_healthy
     restart: on-failure
     environment:
-      dsn: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
+      DATABASE_URL: "host=postgres_database user=root password=root dbname=agentapplicationschema port=5432"
 
   nginx:
     image: nginx:latest

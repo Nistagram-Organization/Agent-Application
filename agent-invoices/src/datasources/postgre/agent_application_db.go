@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	dsn = "dsn"
+	dsn = "DATABASE_URL"
 )
 
 type postgreSQLClient struct {
