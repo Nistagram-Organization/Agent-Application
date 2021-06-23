@@ -3,51 +3,57 @@ version: '3.7'
 services:
   agent-products-db:
     container_name: agent-products-db
-    image: mysql:8.0.19
+    image: postgres:latest
     restart: always
     ports:
-      - 3306
-    command: '--default-authentication-plugin=mysql_native_password'
+      - 5432
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 30s
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=agentapplicationschema
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=agentapplicationschema
+    volumes:
+        - database-data:/var/lib/postgresql/data
 
   agent-reports-db:
     container_name: agent-reports-db
-    image: mysql:8.0.19
+    image: postgres:latest
     restart: always
     ports:
-      - 3306
-    command: '--default-authentication-plugin=mysql_native_password'
+      - 5432
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 30s
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=agentapplicationschema
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=agentapplicationschema
+    volumes:
+        - database-data:/var/lib/postgresql/data
 
   agent-invoices-db:
     container_name: agent-invoices-db
-    image: mysql:8.0.19
+    image: postgres:latest
     restart: always
     ports:
-      - 3306
-    command: '--default-authentication-plugin=mysql_native_password'
+      - 5432
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 30s
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=agentapplicationschema
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=agentapplicationschema
+    volumes:
+        - database-data:/var/lib/postgresql/data
     
   agent-products:
     container_name: agent-products
@@ -59,10 +65,7 @@ services:
       agent-products-db:
           condition: service_healthy
     environment:
-      - mysql_username=root
-      - mysql_password=root
-      - mysql_host=agent-products-db:3306
-      - mysql_schema=agentapplicationschema
+      DATABASE_URL: "host=agent-products-db user=root password=root dbname=agentapplicationschema port=5432"
 
   agent-reports:
     container_name: agent-reports
@@ -74,10 +77,7 @@ services:
       agent-reports-db:
           condition: service_healthy
     environment:
-      - mysql_username=root
-      - mysql_password=root
-      - mysql_host=agent-reports-db:3306
-      - mysql_schema=agentapplicationschema
+      DATABASE_URL: "host=agent-reports-db user=root password=root dbname=agentapplicationschema port=5432"
 
   agent-invoices:
     container_name: agent-invoices
@@ -89,8 +89,5 @@ services:
       agent-invoices-db:
           condition: service_healthy
     environment:
-      - mysql_username=root
-      - mysql_password=root
-      - mysql_host=agent-invoices-db:3306
-      - mysql_schema=agentapplicationschema
+      DATABASE_URL: "host=agent-invoices-db user=root password=root dbname=agentapplicationschema port=5432"
   
