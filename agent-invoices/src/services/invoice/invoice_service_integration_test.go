@@ -2,7 +2,7 @@ package invoice
 
 import (
 	"fmt"
-	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/postgre"
+	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/mysql"
 	invoices "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/invoice"
 	productRepository "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/product"
 	"github.com/Nistagram-Organization/agent-shared/src/model/delivery_information"
@@ -27,7 +27,7 @@ func TestInvoicesServiceIntegrationTestsSuite(t *testing.T) {
 }
 
 func (suite *InvoiceServiceIntegrationTestsSuite) SetupSuite() {
-	database := postgre.NewPostgreSqlDatabaseClient()
+	database := mysql.NewMySqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		suite.Fail("Failed to initialize database")
 	}

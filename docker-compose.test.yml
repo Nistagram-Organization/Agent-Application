@@ -1,58 +1,54 @@
 version: '3.7'
 
 services:
-  agent_products_db:
-    container_name: agent_products_db
-    image: postgres:latest
+  agent-products-db:
+    container_name: agent-products-db
+    image: mysql:8.0.19
     restart: always
     ports:
-      - 5432
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
       retries: 5
+      start_period: 30s
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=agentapplicationschema
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
 
-  agent_reports_db:
-    container_name: agent_reports_db
-    image: postgres:latest
+  agent-reports-db:
+    container_name: agent-reports-db
+    image: mysql:8.0.19
     restart: always
     ports:
-      - 5432
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
       retries: 5
+      start_period: 30s
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=agentapplicationschema
-    volumes:
-        - database-data-reports:/var/lib/postgresql/data
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
 
-  agent_invoices_db:
-    container_name: agent_invoices_db
-    image: postgres:latest
+  agent-invoices-db:
+    container_name: agent-invoices-db
+    image: mysql:8.0.19
     restart: always
     ports:
-      - 5432
+      - 3306
+    command: '--default-authentication-plugin=mysql_native_password'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d agentapplicationschema"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
       retries: 5
+      start_period: 30s
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=agentapplicationschema
-    volumes:
-        - database-data-invoices:/var/lib/postgresql/data
-    
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=agentapplicationschema
+
   agent-products:
     container_name: agent-products
     image: agent-products:test
@@ -60,11 +56,13 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-products
     depends_on:
-      agent_products_db:
+      agent-products-db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent_products_db user=root password=root dbname=agentapplicationschema port=5432"
-      HEROKU: "false"
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-products-db:3306
+      - mysql_schema=agentapplicationschema
 
   agent-reports:
     container_name: agent-reports
@@ -73,11 +71,13 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-reports
     depends_on:
-      agent_reports_db:
+      agent-reports-db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent_reports_db user=root password=root dbname=agentapplicationschema port=5432"
-      HEROKU: "false"
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-reports-db:3306
+      - mysql_schema=agentapplicationschema
 
   agent-invoices:
     container_name: agent-invoices
@@ -86,9 +86,10 @@ services:
       dockerfile: Dockerfile.test
       context: ./agent-invoices
     depends_on:
-      agent_invoices_db:
+      agent-invoices-db:
           condition: service_healthy
     environment:
-      DATABASE_URL: "host=agent_invoices_db user=root password=root dbname=agentapplicationschema port=5432"
-      HEROKU: "false"
-  
+      - mysql_username=root
+      - mysql_password=root
+      - mysql_host=agent-invoices-db:3306
+      - mysql_schema=agentapplicationschema
