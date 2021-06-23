@@ -3,6 +3,8 @@
 # DESTROY TERRAFORM BACKEND ON HEROKU POSTGRES
 # heroku apps:destroy --app $TERRAFORM_PG_BACKEND
 
+echo "Running destory.sh"
+
 ALL_HEROKU_APPS=$(heroku apps) && export ALL_HEROKU_APPS
 
 echo $ALL_HEROKU_APPS

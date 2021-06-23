@@ -17,6 +17,11 @@ variable "agent-reports-name" {
 }
 
 
+resource "heroku_addon" "database" {
+  app = heroku_app.agent-products.name
+  plan = "heroku-postgresql:hobby-dev"
+}
+
 ## ---------- AGENT-PRODUCTS ----------- ##
 resource "heroku_app" "agent-products" {
   name   = var.agent-products-name
@@ -32,9 +37,9 @@ resource "heroku_build" "agent-products" {
   }
 }
 
-resource "heroku_addon" "database" {
-  app = heroku_app.agent-products.name
-  plan = "heroku-postgresql:hobby-dev"
+resource "heroku_addon_attachment" "db1" {
+  app_id  = heroku_app.agent-products.id
+  addon_id = heroku_addon.database.id
 }
 
 
@@ -53,7 +58,7 @@ resource "heroku_build" "agent-invoices" {
   }
 }
 
-resource "heroku_addon_attachment" "database" {
+resource "heroku_addon_attachment" "db2" {
   app_id  = heroku_app.agent-invoices.id
   addon_id = heroku_addon.database.id
 }
@@ -75,7 +80,7 @@ resource "heroku_build" "agent-reports" {
   }
 }
 
-resource "heroku_addon_attachment" "database1" {
+resource "heroku_addon_attachment" "db3" {
   app_id  = heroku_app.agent-reports.id
   addon_id = heroku_addon.database.id
 }

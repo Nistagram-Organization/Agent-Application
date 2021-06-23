@@ -4,6 +4,8 @@
 # heroku create $TERRAFORM_PG_BACKEND
 # heroku addons:create heroku-postgresql:hobby-dev --app $TERRAFORM_PG_BACKEND
 
+echo "Running deploy.sh"
+
 ALL_HEROKU_APPS=$(heroku apps) && export ALL_HEROKU_APPS
 
 echo $ALL_HEROKU_APPS
