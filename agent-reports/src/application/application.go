@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	controller "github.com/Nistagram-Organization/Agent-Application/agent-reports/src/controllers/product_report"
 	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/datasources/postgre"
 	"github.com/Nistagram-Organization/Agent-Application/agent-reports/src/repositories/product_report"
@@ -12,6 +13,7 @@ import (
 	"github.com/Nistagram-Organization/agent-shared/src/utils/jwt_utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 var (
@@ -44,5 +46,9 @@ func StartApplication() {
 
 	router.GET("/reports", jwt_utils.GetJwtMiddleware(), jwt_utils.CheckScope("create:report"), productReportController.GenerateReport)
 
-	router.Run(":8082")
+	if port, exists := os.LookupEnv("PORT"); exists {
+		router.Run(fmt.Sprintf(":%s", port))
+	} else {
+		router.Run(":8082")
+	}
 }
