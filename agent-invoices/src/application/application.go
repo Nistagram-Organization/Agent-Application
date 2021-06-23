@@ -1,8 +1,9 @@
 package application
 
 import (
+	"fmt"
 	invoice2 "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/controllers/invoice"
-	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/mysql"
+	"github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/datasources/postgre"
 	invoice4 "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/invoice"
 	product2 "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/repositories/product"
 	invoice3 "github.com/Nistagram-Organization/Agent-Application/agent-invoices/src/services/invoice"
@@ -12,6 +13,7 @@ import (
 	"github.com/Nistagram-Organization/agent-shared/src/model/product"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 var (
@@ -19,9 +21,12 @@ var (
 )
 
 func StartApplication() {
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+	router.Use(cors.New(corsConfig))
 
-	database := mysql.NewMySqlDatabaseClient()
+	database := postgre.NewPostgreSqlDatabaseClient()
 	if err := database.Init(); err != nil {
 		panic(err)
 	}
@@ -44,5 +49,9 @@ func StartApplication() {
 
 	router.POST("/invoices", invoicesController.BuyProduct)
 
-	router.Run(":8083")
+	if port, exists := os.LookupEnv("PORT"); exists {
+		router.Run(fmt.Sprintf(":%s", port))
+	} else {
+		router.Run(":8083")
+	}
 }
