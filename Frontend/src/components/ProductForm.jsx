@@ -35,7 +35,7 @@ const ProductForm = () => {
     const product = useSelector(state => state.products.shown)
     const action = useSelector(state => state.modals.action)
     const { getAccessTokenSilently } = useAuth0()
-    const { token, setToken } = useState(null)
+    const [ token, setToken ] = useState(null)
 
     useEffect(() => {
         getAccessTokenSilently().then(t => setToken(t))
