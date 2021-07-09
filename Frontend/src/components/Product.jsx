@@ -25,8 +25,8 @@ const Product = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
-    const { getAccessTokenSilently } = useAuth0()
-    const { token, setToken } = useState(null)
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+    const [ token, setToken ] = useState(null)
 
     useEffect(() => {
         getAccessTokenSilently().then(t => setToken(t))
@@ -120,7 +120,7 @@ const Product = () => {
                                 </Form>)}
                         </Formik>
                     </Row>
-                    <Row style={{ marginTop: '1%' }}>
+                    {isAuthenticated && <><Row style={{ marginTop: '1%' }}>
                         <Col sm={7}>
                             <Button onClick={openEditModal}>Edit product</Button>
                         </Col>
@@ -129,7 +129,7 @@ const Product = () => {
                         <Col sm={7}>
                             <Button variant="danger" onClick={deleteProduct}>Delete product</Button>
                         </Col>
-                    </Row>
+                    </Row></>}
                 </Col>
             </Row>
         </div>
