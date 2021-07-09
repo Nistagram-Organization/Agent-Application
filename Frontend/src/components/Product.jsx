@@ -26,7 +26,7 @@ const Product = () => {
     const history = useHistory()
     const product = useSelector(state => state.products.shown)
     const { getAccessTokenSilently } = useAuth0()
-    const { token, setToken } = useState(null)
+    const [ token, setToken ] = useState(null)
 
     useEffect(() => {
         getAccessTokenSilently().then(t => setToken(t))
