@@ -3,7 +3,7 @@ module github.com/Nistagram-Organization/Agent-Application/agent-invoices
 go 1.15
 
 require (
-	github.com/Nistagram-Organization/agent-shared v0.0.0-20210606193808-7ba5dc020847
+	github.com/Nistagram-Organization/agent-shared v0.0.0-20210709140908-48f27092544f
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.1
 	github.com/lib/pq v1.3.0

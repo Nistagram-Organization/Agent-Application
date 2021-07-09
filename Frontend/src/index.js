@@ -14,8 +14,8 @@ ReactDOM.render(
                 clientId="scV8c0nay2dGleOBxq5CtaCP9idlz7U0"
                 audience="http://nistagram-agent"
                 redirectUri="http://localhost:3000/dashboard/products"
-                scope="create:report create:product edit:product delete:product get:product"
                 useRefreshTokens={true}
+                cacheLocation={'localstorage'}
             >
             <App/>
             </Auth0Provider>
